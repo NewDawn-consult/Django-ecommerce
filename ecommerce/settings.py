@@ -4,9 +4,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-6#hzfk&8jse1$^2bqj^5*dgx57^umy4qnmf59it+2d64h4rssp'
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['newdawn.pythonanywhere.com']
 
 
 INSTALLED_APPS = [
