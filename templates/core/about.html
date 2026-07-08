@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    About Us — ShopExpress
+{% endblock %}
+{% block content %}
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                About Us</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'core:home' %}">
+                                Home</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                About Us</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+                {# ─── Company Story ─── #}
+                <section class="container my-5">
+                    <div class="row align-items-center g-5">
+                        <div class="col-lg-6">
+                            <span class="badge bg-primary bg-opacity-10 text-primary mb-3">
+                                Our Story</span>
+                                <h2 class="fw-bold display-6 mb-3">
+                                    More Than Just a Store</h2>
+                                    <p class="text-secondary lead">
+                                        Founded in 2024, ShopExpress set out to revolutionize online shopping by combining quality products with exceptional service.</p>
+                                        <p class="text-secondary">
+                                            We partner with trusted suppliers worldwide to bring you the best products at competitive prices. Our commitment to customer satisfaction drives everything we do — from easy browsing and secure checkout to lightning-fast delivery and hassle-free returns.</p>
+                                            <p class="text-secondary">
+                                                What started as a small idea has grown into a thriving marketplace serving thousands of customers across the country, with plans to expand even further.</p>
+                                                <div class="row mt-4 g-3">
+                                                    <div class="col-4 text-center">
+                                                        <h3 class="fw-bold text-primary mb-0">
+                                                            50K+</h3>
+                                                            <small class="text-secondary">
+                                                                Happy Customers</small>
+                                                            </div>
+                                                            <div class="col-4 text-center">
+                                                                <h3 class="fw-bold text-primary mb-0">
+                                                                    10K+</h3>
+                                                                    <small class="text-secondary">
+                                                                        Products</small>
+                                                                    </div>
+                                                                    <div class="col-4 text-center">
+                                                                        <h3 class="fw-bold text-primary mb-0">
+                                                                            99%</h3>
+                                                                            <small class="text-secondary">
+                                                                                Satisfaction</small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-6">
+                                                                        <div class="bg-light rounded-4 p-5 text-center">
+                                                                            <i class="fa-solid fa-bolt" style="font-size: 8rem; color: var(--primary); opacity: 0.3;">
+                                                                            </i>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </section>
+                                                            {# ─── Mission & Vision ─── #}
+                                                            <section class="bg-white py-5">
+                                                                <div class="container">
+                                                                    <div class="row g-4">
+                                                                        <div class="col-md-6">
+                                                                            <div class="p-4 h-100 border rounded-4">
+                                                                                <div class="about-icon mx-auto mb-3">
+                                                                                    <i class="bi bi-bullseye">
+                                                                                    </i>
+                                                                                </div>
+                                                                                <h4 class="fw-bold text-center mb-2">
+                                                                                    Our Mission</h4>
+                                                                                    <p class="text-secondary text-center mb-0">
+                                                                                        To make quality products accessible to everyone by providing a seamless, secure, and enjoyable online shopping experience. We strive to bridge the gap between customers and the products they love, ensuring every purchase brings joy and value.</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="p-4 h-100 border rounded-4">
+                                                                                        <div class="about-icon mx-auto mb-3">
+                                                                                            <i class="bi bi-eye">
+                                                                                            </i>
+                                                                                        </div>
+                                                                                        <h4 class="fw-bold text-center mb-2">
+                                                                                            Our Vision</h4>
+                                                                                            <p class="text-secondary text-center mb-0">
+                                                                                                To become the most trusted e-commerce platform in Africa, setting the standard for customer satisfaction, product quality, and delivery reliability. We envision a future where anyone can shop online with confidence and convenience.</p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </section>
+                                                                            {# ─── Services ─── #}
+                                                                            <section class="container my-5 pt-3">
+                                                                                <div class="text-center mb-5">
+                                                                                    <span class="badge bg-primary bg-opacity-10 text-primary mb-3">
+                                                                                        What We Offer</span>
+                                                                                        <h2 class="fw-bold">
+                                                                                            Our Services</h2>
+                                                                                            <p class="text-secondary">
+                                                                                                Everything you need for a smooth shopping experience</p>
+                                                                                            </div>
+                                                                                            <div class="row g-4">
+                                                                                                <div class="col-md-4">
+                                                                                                    <div class="text-center p-4">
+                                                                                                        <div class="about-icon mx-auto">
+                                                                                                            <i class="bi bi-box-seam">
+                                                                                                            </i>
+                                                                                                        </div>
+                                                                                                        <h5 class="fw-bold">
+                                                                                                            Nationwide Delivery</h5>
+                                                                                                            <p class="text-secondary small">
+                                                                                                                Reliable shipping to every region with real-time tracking. Free delivery on orders over GHs500, with express options available.</p>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="col-md-4">
+                                                                                                            <div class="text-center p-4">
+                                                                                                                <div class="about-icon mx-auto">
+                                                                                                                    <i class="bi bi-arrow-repeat">
+                                                                                                                    </i>
+                                                                                                                </div>
+                                                                                                                <h5 class="fw-bold">
+                                                                                                                    Easy Returns</h5>
+                                                                                                                    <p class="text-secondary small">
+                                                                                                                        Not satisfied? Return any item within 30 days for a full refund. We'll even cover the return shipping costs on defective items.</p>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                                <div class="col-md-4">
+                                                                                                                    <div class="text-center p-4">
+                                                                                                                        <div class="about-icon mx-auto">
+                                                                                                                            <i class="bi bi-lock">
+                                                                                                                            </i>
+                                                                                                                        </div>
+                                                                                                                        <h5 class="fw-bold">
+                                                                                                                            Secure Payments</h5>
+                                                                                                                            <p class="text-secondary small">
+                                                                                                                                Shop with confidence using encrypted transactions. We support multiple payment methods including mobile money, cards, and bank transfers.</p>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                        <div class="col-md-4">
+                                                                                                                            <div class="text-center p-4">
+                                                                                                                                <div class="about-icon mx-auto">
+                                                                                                                                    <i class="bi bi-headset">
+                                                                                                                                    </i>
+                                                                                                                                </div>
+                                                                                                                                <h5 class="fw-bold">
+                                                                                                                                    24/7 Customer Support</h5>
+                                                                                                                                    <p class="text-secondary small">
+                                                                                                                                        Our dedicated support team is available around the clock via phone, email, and live chat to assist with any questions or issues.</p>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                                <div class="col-md-4">
+                                                                                                                                    <div class="text-center p-4">
+                                                                                                                                        <div class="about-icon mx-auto">
+                                                                                                                                            <i class="bi bi-tag">
+                                                                                                                                            </i>
+                                                                                                                                        </div>
+                                                                                                                                        <h5 class="fw-bold">
+                                                                                                                                            Best Price Guarantee</h5>
+                                                                                                                                            <p class="text-secondary small">
+                                                                                                                                                We continuously monitor prices to ensure you're getting the best deals. Found a lower price? We'll match it within 7 days of purchase.</p>
+                                                                                                                                            </div>
+                                                                                                                                        </div>
+                                                                                                                                        <div class="col-md-4">
+                                                                                                                                            <div class="text-center p-4">
+                                                                                                                                                <div class="about-icon mx-auto">
+                                                                                                                                                    <i class="bi bi-gift">
+                                                                                                                                                    </i>
+                                                                                                                                                </div>
+                                                                                                                                                <h5 class="fw-bold">
+                                                                                                                                                    Loyalty Rewards</h5>
+                                                                                                                                                    <p class="text-secondary small">
+                                                                                                                                                        Earn points with every purchase, unlock exclusive discounts, and get early access to sales and new arrivals through our rewards program.</p>
+                                                                                                                                                    </div>
+                                                                                                                                                </div>
+                                                                                                                                            </div>
+                                                                                                                                        </section>
+                                                                                                                                        {# ─── Team ─── #}
+                                                                                                                                        <section class="bg-white py-5">
+                                                                                                                                            <div class="container">
+                                                                                                                                                <div class="text-center mb-5">
+                                                                                                                                                    <span class="badge bg-primary bg-opacity-10 text-primary mb-3">
+                                                                                                                                                        Our Team</span>
+                                                                                                                                                        <h2 class="fw-bold">
+                                                                                                                                                            Meet the People Behind ShopExpress</h2>
+                                                                                                                                                            <p class="text-secondary">
+                                                                                                                                                                A passionate team dedicated to transforming your shopping experience</p>
+                                                                                                                                                            </div>
+                                                                                                                                                            <div class="row g-4 justify-content-center">
+                                                                                                                                                                <div class="col-6 col-md-4 col-lg-3">
+                                                                                                                                                                    <div class="card team-card shadow-sm border-0">
+                                                                                                                                                                        <div class="team-img">
+                                                                                                                                                                            <i class="bi bi-person-circle">
+                                                                                                                                                                            </i>
+                                                                                                                                                                        </div>
+                                                                                                                                                                        <div class="card-body text-center">
+                                                                                                                                                                            <h5 class="fw-bold mb-1">
+                                                                                                                                                                                John Doe</h5>
+                                                                                                                                                                                <small class="text-secondary d-block mb-2">
+                                                                                                                                                                                    CEO &amp; Founder</small>
+                                                                                                                                                                                    <div class="d-flex justify-content-center gap-2">
+                                                                                                                                                                                        <a href="#" class="text-secondary small">
+                                                                                                                                                                                            <i class="bi bi-linkedin">
+                                                                                                                                                                                            </i>
+                                                                                                                                                                                        </a>
+                                                                                                                                                                                        <a href="#" class="text-secondary small">
+                                                                                                                                                                                            <i class="bi bi-twitter-x">
+                                                                                                                                                                                            </i>
+                                                                                                                                                                                        </a>
+                                                                                                                                                                                        <a href="#" class="text-secondary small">
+                                                                                                                                                                                            <i class="bi bi-envelope">
+                                                                                                                                                                                            </i>
+                                                                                                                                                                                        </a>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+                                                                                                                                                                            </div>
+                                                                                                                                                                        </div>
+                                                                                                                                                                        <div class="col-6 col-md-4 col-lg-3">
+                                                                                                                                                                            <div class="card team-card shadow-sm border-0">
+                                                                                                                                                                                <div class="team-img">
+                                                                                                                                                                                    <i class="bi bi-person-circle">
+                                                                                                                                                                                    </i>
+                                                                                                                                                                                </div>
+                                                                                                                                                                                <div class="card-body text-center">
+                                                                                                                                                                                    <h5 class="fw-bold mb-1">
+                                                                                                                                                                                        Jane Smith</h5>
+                                                                                                                                                                                        <small class="text-secondary d-block mb-2">
+                                                                                                                                                                                            Head of Operations</small>
+                                                                                                                                                                                            <div class="d-flex justify-content-center gap-2">
+                                                                                                                                                                                                <a href="#" class="text-secondary small">
+                                                                                                                                                                                                    <i class="bi bi-linkedin">
+                                                                                                                                                                                                    </i>
+                                                                                                                                                                                                </a>
+                                                                                                                                                                                                <a href="#" class="text-secondary small">
+                                                                                                                                                                                                    <i class="bi bi-twitter-x">
+                                                                                                                                                                                                    </i>
+                                                                                                                                                                                                </a>
+                                                                                                                                                                                                <a href="#" class="text-secondary small">
+                                                                                                                                                                                                    <i class="bi bi-envelope">
+                                                                                                                                                                                                    </i>
+                                                                                                                                                                                                </a>
+                                                                                                                                                                                            </div>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+                                                                                                                                                                                <div class="col-6 col-md-4 col-lg-3">
+                                                                                                                                                                                    <div class="card team-card shadow-sm border-0">
+                                                                                                                                                                                        <div class="team-img">
+                                                                                                                                                                                            <i class="bi bi-person-circle">
+                                                                                                                                                                                            </i>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                        <div class="card-body text-center">
+                                                                                                                                                                                            <h5 class="fw-bold mb-1">
+                                                                                                                                                                                                Mike Johnson</h5>
+                                                                                                                                                                                                <small class="text-secondary d-block mb-2">
+                                                                                                                                                                                                    Lead Developer</small>
+                                                                                                                                                                                                    <div class="d-flex justify-content-center gap-2">
+                                                                                                                                                                                                        <a href="#" class="text-secondary small">
+                                                                                                                                                                                                            <i class="bi bi-linkedin">
+                                                                                                                                                                                                            </i>
+                                                                                                                                                                                                        </a>
+                                                                                                                                                                                                        <a href="#" class="text-secondary small">
+                                                                                                                                                                                                            <i class="bi bi-twitter-x">
+                                                                                                                                                                                                            </i>
+                                                                                                                                                                                                        </a>
+                                                                                                                                                                                                        <a href="#" class="text-secondary small">
+                                                                                                                                                                                                            <i class="bi bi-envelope">
+                                                                                                                                                                                                            </i>
+                                                                                                                                                                                                        </a>
+                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                </div>
+                                                                                                                                                                                            </div>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                        <div class="col-6 col-md-4 col-lg-3">
+                                                                                                                                                                                            <div class="card team-card shadow-sm border-0">
+                                                                                                                                                                                                <div class="team-img">
+                                                                                                                                                                                                    <i class="bi bi-person-circle">
+                                                                                                                                                                                                    </i>
+                                                                                                                                                                                                </div>
+                                                                                                                                                                                                <div class="card-body text-center">
+                                                                                                                                                                                                    <h5 class="fw-bold mb-1">
+                                                                                                                                                                                                        Sarah Williams</h5>
+                                                                                                                                                                                                        <small class="text-secondary d-block mb-2">
+                                                                                                                                                                                                            Marketing Director</small>
+                                                                                                                                                                                                            <div class="d-flex justify-content-center gap-2">
+                                                                                                                                                                                                                <a href="#" class="text-secondary small">
+                                                                                                                                                                                                                    <i class="bi bi-linkedin">
+                                                                                                                                                                                                                    </i>
+                                                                                                                                                                                                                </a>
+                                                                                                                                                                                                                <a href="#" class="text-secondary small">
+                                                                                                                                                                                                                    <i class="bi bi-twitter-x">
+                                                                                                                                                                                                                    </i>
+                                                                                                                                                                                                                </a>
+                                                                                                                                                                                                                <a href="#" class="text-secondary small">
+                                                                                                                                                                                                                    <i class="bi bi-envelope">
+                                                                                                                                                                                                                    </i>
+                                                                                                                                                                                                                </a>
+                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                </div>
+                                                                                                                                                                                            </div>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                    </section>
+                                                                                                                                                                                    {# ─── CTA ─── #}
+                                                                                                                                                                                    <section class="container my-5">
+                                                                                                                                                                                        <div class="bg-primary rounded-4 p-5 text-center text-white">
+                                                                                                                                                                                            <h2 class="fw-bold mb-2">
+                                                                                                                                                                                                Ready to Start Shopping?</h2>
+                                                                                                                                                                                                <p class="mb-4 opacity-75">
+                                                                                                                                                                                                    Join thousands of satisfied customers and experience shopping the ShopExpress way.</p>
+                                                                                                                                                                                                    <a href="{% url 'store:product_list' %}" class="btn btn-light btn-lg px-5 rounded-pill">
+                                                                                                                                                                                                        Browse Products</a>
+                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                </section>
+                                                                                                                                                                                            {% endblock %}

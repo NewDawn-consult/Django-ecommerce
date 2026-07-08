@@ -1,0 +1,67 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}{{ title }} — Admin — ShopExpress{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-1">{{ title }}</h4>
+        <p class="text-secondary small mb-0">Manage product details</p>
+    </div>
+    <a href="{% url 'admin_panel:product_list' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Back to Products
+    </a>
+</div>
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body p-4">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% crispy form %}
+            {% if product and product.image %}
+                <div class="mt-2 mb-3">
+                    <img src="{{ product.image.url }}" alt="" style="max-height: 80px; border-radius: 6px;">
+                </div>
+            {% endif %}
+
+            <div class="card mt-4 border-0 bg-light">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-images me-2"></i>Additional Images</h6>
+                    {{ formset.management_form }}
+                    <div class="row g-3" id="image-formset">
+                        {% for f in formset %}
+                            <div class="col-md-4 image-form">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body text-center">
+                                        {% for hidden in f.hidden_fields %}
+                                            {{ hidden }}
+                                        {% endfor %}
+                                        {% if f.instance.pk and f.instance.image %}
+                                            <img src="{{ f.instance.image.url }}" alt="" class="img-fluid rounded mb-2" style="max-height: 120px;">
+                                        {% endif %}
+                                        <div class="mb-2">
+                                            {{ f.image }}
+                                        </div>
+                                        {% if f.instance.pk %}
+                                            <div class="form-check form-switch">
+                                                {{ f.DELETE }}
+                                                <label class="form-check-label small text-danger" for="{{ f.DELETE.id_for_label }}">Delete</label>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg me-1"></i> Save Product
+                </button>
+                <a href="{% url 'admin_panel:product_list' %}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

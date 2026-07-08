@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+    My Orders — ShopExpress
+{% endblock %}
+{% block content %}
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                My Orders</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'core:home' %}">
+                                Home</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Orders</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+                <section class="container my-5">
+                    {% if user.is_authenticated %}
+                        {% if orders %}
+                            <div class="card shadow-sm border-0 rounded-3">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table align-middle">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>
+                                                        Order #</th>
+                                                        <th>
+                                                            Date</th>
+                                                            <th>
+                                                                Items</th>
+                                                                <th>
+                                                                    Status</th>
+                                                                    <th>
+                                                                        Total</th>
+                                                                        <th>
+                                                                        </th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {% for order in orders %}
+                                                                        <tr>
+                                                                            <td class="fw-semibold">
+                                                                                {{ order.pk }}
+                                                                            </td>
+                                                                            <td>
+                                                                                {{ order.created_at|date:"M d, Y" }}
+                                                                            </td>
+                                                                            <td>
+                                                                                {{ order.items.count }}
+                                                                            </td>
+                                                                            <td>
+                                                                                <span class="badge rounded-pill
+                                                                                    {% if order.status == 'completed' %}
+                                                                                        bg-success
+                                                                                    {% elif order.status == 'cancelled' %}
+                                                                                    bg-danger
+                                                                                {% elif order.status == 'processing' %}
+                                                                                bg-warning text-dark
+                                                                            {% else %}
+                                                                            bg-secondary
+                                                                        {% endif %}">
+                                                                        {{ order.get_status_display }}
+                                                                    </span>
+                                                                </td>
+                                                                <td class="fw-bold">
+                                                                    GHs{{order.total|intcomma}}
+                                                                </td>
+                                                                <td>
+                                                                    <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-sm btn-outline-primary">
+                                                                        View</a>
+                                                                    </td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                    <div class="text-center py-5">
+                                        <i class="bi bi-box" style="font-size: 4rem; color: var(--secondary);">
+                                        </i>
+                                        <h5 class="fw-bold mt-3">
+                                            No orders yet</h5>
+                                            <p class="text-secondary">
+                                                Looks like you haven't placed any orders.</p>
+                                                <a href="{% url 'store:product_list' %}" class="btn btn-primary btn-lg mt-2">
+                                                    <i class="bi bi-shop me-2">
+                                                    </i>
+                                                    Start Shopping            </a>
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                        <div class="text-center py-5">
+                                            <i class="bi bi-box" style="font-size: 4rem; color: var(--secondary);">
+                                            </i>
+                                            <h4 class="fw-bold mt-3">
+                                                Log in to view your orders</h4>
+                                                <p class="text-secondary">
+                                                    Sign in to see your order history and track shipments.</p>
+                                                    <a href="{% url 'accounts:login' %}" class="btn btn-primary px-4">
+                                                        Login</a>
+                                                    </div>
+                                                {% endif %}
+                                            </section>
+                                        {% endblock %}

@@ -1,0 +1,522 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% load store_extras %}
+{% block title %}
+    {{ product.name }}
+    — ShopExpress
+{% endblock %}
+{% block content %}
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                {{ product.name }}
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'core:home' %}">
+                            Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'store:product_list' %}">
+                                Shop</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'store:product_list' %}
+                                    ?category={{ product.category.slug }}">
+                                    {{ product.category.name }}
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                {{ product.name|truncatechars:30 }}
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            {# ─── Product Main ─── #}
+            <section class="container my-5">
+                <div class="row g-5">
+                    {# Image Gallery #}
+                    <div class="col-lg-6">
+                        <div class="gallery-main mb-3">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-100 rounded-4 gallery-main-img" id="mainImage" style="height: 450px;">
+                                {% else %}
+                                <div class="bg-light rounded-4 d-flex align-items-center justify-content-center" style="height: 450px;">
+                                    <i class="bi bi-box-seam" style="font-size: 6rem; color: var(--secondary); opacity: 0.4;">
+                                    </i>
+                                </div>
+                            {% endif %}
+                            {% if product.featured %}
+                                <span class="gallery-badge badge bg-danger">
+                                    Featured</span>
+                                {% endif %}
+                            </div>
+                            {% with images=product.images.all %}
+                                <div class="gallery-thumbs row g-2" id="galleryThumbs">
+                                    {% if product.image %}
+                                        <div class="col-3">
+                                            <img src="{{ product.image.url }}" alt="" class="w-100 rounded-3 gallery-thumb active" data-src="{{ product.image.url }}" style="height: 85px; object-fit: cover; cursor: pointer;">
+                                            </div>
+                                        {% endif %}
+                                        {% for img in images %}
+                                            <div class="col-3">
+                                                <img src="{{ img.image.url }}" alt="" class="w-100 rounded-3 gallery-thumb" data-src="{{ img.image.url }}" style="height: 85px; object-fit: cover; cursor: pointer;">
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endwith %}
+                                </div>
+                                {# Product Info #}
+                                <div class="col-lg-6">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary mb-2 px-3 py-2">
+                                        {{ product.category.name }}
+                                    </span>
+                                    <h2 class="fw-bold display-6 mb-2">
+                                        {{ product.name }}
+                                    </h2>
+                                    <div class="d-flex align-items-center gap-3 mb-3">
+                                        <div class="product-rating">
+                                            {% if avg_rating %}
+                                                {% for i in '12345'|make_list %}
+                                                    {% if forloop.counter <= avg_rating %}
+                                                            <i class="bi bi-star-fill text-warning">
+                                                            </i>
+                                                        {% elif forloop.counter <= avg_rating|add:"0.5" %}
+                                                            <i class="bi bi-star-half text-warning">
+                                                            </i>
+                                                        {% else %}
+                                                        <i class="bi bi-star text-warning">
+                                                        </i>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                            {% for i in '12345'|make_list %}
+                                                <i class="bi bi-star text-warning">
+                                                </i>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    <span class="text-secondary small">
+                                        {% if review_count > 0 %}
+                                            {{ avg_rating }}
+                                            — {{ review_count }}
+                                            review{{ review_count|pluralize }}
+                                        {% else %}
+                                        No reviews yet
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="d-flex align-items-baseline gap-3 mb-3">
+                                <span class="fs-2 fw-bold">
+                                    GHs{{product.price|intcomma}}
+                                </span>
+                                {% if product.stock > 0 and product.stock < 5 %}
+                                        <span class="badge bg-warning text-dark">
+                                            Only {{ product.stock }}
+                                            left</span>
+                                        {% endif %}
+                                    </div>
+                                    <hr>
+                                        {# Description #}
+                                        <div class="mb-4">
+                                            <h6 class="fw-bold mb-2">
+                                                Description</h6>
+{{ product.description|bulletize }}
+                                            </div>
+                                            <hr>
+                                                {# Stock #}
+                                                <div class="mb-3">
+                                                    {% if product.stock > 0 %}
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <span class="stock-indicator in-stock">
+                                                            </span>
+                                                            <span class="fw-semibold text-success">
+                                                                {% if product.stock < 5 %}
+                                                                        Only {{ product.stock }}
+                                                                        left in stock — order soon
+                                                                    {% else %}
+                                                                    In Stock
+                                                                {% endif %}
+                                                            </span>
+                                                        </div>
+                                                    {% else %}
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span class="stock-indicator out-of-stock">
+                                                        </span>
+                                                        <span class="fw-semibold text-danger">
+                                                            Out of Stock</span>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                {# Quantity + Buttons #}
+                                                <form method="post" action="{% url 'cart:cart_add' %}" class="mb-4">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="product_id" value="{{ product.pk }}">
+                                                        <label class="fw-semibold small mb-2">
+                                                            Quantity</label>
+                                                            <div class="d-flex align-items-center gap-3 flex-wrap">
+                                                                <div class="input-group qty-selector" style="max-width: 130px;">
+                                                                    <button type="button" class="btn btn-outline-secondary qty-btn">
+                                                                        −</button>
+                                                                        <input type="number" name="quantity" class="form-control text-center qty-input" value="1" min="1" max="{{ product.stock }}">
+                                                                            <button type="button" class="btn btn-outline-secondary qty-btn">
+                                                                                +</button>
+                                                                            </div>
+                                                                            <span class="small text-secondary">
+                                                                                Max: {{ product.stock }}
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="d-flex gap-3 mt-3">
+                                                                            <button type="submit" class="btn btn-primary btn-lg flex-grow-1 add-to-cart-btn"
+                                                                                {% if product.stock == 0 %}
+                                                                                    disabled
+                                                                                {% endif %}
+                                                                                >
+                                                                                <i class="bi bi-cart-plus me-2">
+                                                                                </i>
+                                                                                <span>
+                                                                                    {% if product.stock == 0 %}
+                                                                                        Sold Out
+                                                                                    {% else %}
+                                                                                    Add to Cart
+                                                                                {% endif %}
+                                                                            </span>
+                                                                        </button>
+                                                                    </div>
+                                                                </form>
+                                                                <form method="post" action="{% url 'accounts:wishlist_toggle' %}" class="mb-4">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name="product_id" value="{{ product.pk }}">
+                                                                        {% if is_in_wishlist %}
+                                                                            <button type="submit" class="btn btn-danger btn-lg w-100 wishlist-detail-btn" title="Remove from Wishlist">
+                                                                                <i class="bi bi-heart-fill me-2">
+                                                                                </i>
+                                                                                Saved                </button>
+                                                                            {% else %}
+                                                                            <button type="submit" class="btn btn-outline-danger btn-lg w-100 wishlist-detail-btn" title="Add to Wishlist">
+                                                                                <i class="bi bi-heart me-2">
+                                                                                </i>
+                                                                                Add to Wishlist                </button>
+                                                                            {% endif %}
+                                                                        </form>
+                                                                        <hr>
+                                                                            <div class="d-flex gap-4 small text-secondary flex-wrap">
+                                                                                <span>
+                                                                                    <i class="bi bi-truck me-1">
+                                                                                    </i>
+                                                                                    Free shipping on orders over GHs500</span>
+                                                                                    <span>
+                                                                                        <i class="bi bi-arrow-repeat me-1">
+                                                                                        </i>
+                                                                                        30-day returns</span>
+                                                                                    </div>
+                                                                                    <div class="d-flex gap-4 small text-secondary flex-wrap mt-2">
+                                                                                        <span>
+                                                                                            <i class="bi bi-shield-check me-1">
+                                                                                            </i>
+                                                                                            Secure checkout</span>
+                                                                                            <span>
+                                                                                                <i class="bi bi-clock me-1">
+                                                                                                </i>
+                                                                                                Ships in 1–2 business days</span>
+                                                                                            </div>
+                                                                                            {# Category + SKU #}
+                                                                                            <hr>
+                                                                                                <div class="d-flex gap-4 small text-secondary">
+                                                                                                    <span>
+                                                                                                        <strong>
+                                                                                                            Category:</strong>
+                                                                                                            <a href="{% url 'store:product_list' %}
+                                                                                                                ?category={{ product.category.slug }}" class="text-decoration-none">
+                                                                                                                {{ product.category.name }}
+                                                                                                            </a>
+                                                                                                        </span>
+                                                                                                        <span>
+                                                                                                            <strong>
+                                                                                                                SKU:</strong>
+                                                                                                                PROD-{{ product.pk|stringformat:"04d" }}
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </section>
+                                                                                            {# ─── Info Tabs ─── #}
+                                                                                            <section class="bg-white py-5">
+                                                                                                <div class="container">
+                                                                                                    <ul class="nav nav-tabs border-bottom mb-4" id="productTabs" role="tablist">
+                                                                                                        <li class="nav-item" role="presentation">
+                                                                                                            <button class="nav-link active fw-semibold" id="desc-tab" data-bs-toggle="tab" data-bs-target="#desc" type="button">
+                                                                                                                Description</button>
+                                                                                                            </li>
+                                                                                                            <li class="nav-item" role="presentation">
+                                                                                                                <button class="nav-link fw-semibold" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button">
+                                                                                                                    Reviews
+                                                                                                                    {% if review_count %}
+                                                                                                                        ({{ review_count }}
+                                                                                                                        )
+                                                                                                                    {% endif %}
+                                                                                                                </button>
+                                                                                                            </li>
+                                                                                                            <li class="nav-item" role="presentation">
+                                                                                                                <button class="nav-link fw-semibold" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button">
+                                                                                                                    Shipping & Returns</button>
+                                                                                                                </li>
+                                                                                                            </ul>
+                                                                                                            <div class="tab-content" id="productTabsContent">
+                                                                                                                {# Description Tab #}
+                                                                                                                <div class="tab-pane fade show active" id="desc">
+                                                                                                                    <div class="row justify-content-center">
+                                                                                                                        <div class="col-lg-8">
+                                                                                                                            <h4 class="fw-bold mb-3">
+                                                                                                                                {{ product.name }}
+                                                                                                                            </h4>
+                                                            {% if product.description %}
+{{ product.description|bulletize }}
+                                                                                                            {% else %}
+                                                                                                            <p class="text-secondary">
+                                                                                                                No description available for this product.</p>
+                                                                                                            {% endif %}
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                {# Reviews Tab #}
+                                                                                                                <div class="tab-pane fade" id="reviews">
+                                                                                                                    <div class="row g-5">
+                                                                                                                        <div class="col-lg-4">
+                                                                                                                            <div class="bg-light rounded-4 p-4 text-center">
+                                                                                                                                <div class="fs-1 fw-bold mb-1">
+                                                                                                                                    {{ avg_rating }}
+                                                                                                                                </div>
+                                                                                                                                <div class="product-rating mb-2 fs-5">
+                                                                                                                                    {% for i in '12345'|make_list %}
+                                                                        {% if forloop.counter <= avg_rating %}
+                                                                                                                                                <i class="bi bi-star-fill text-warning">
+                                                                                                                                                </i>
+                                                                                                                                             {% elif forloop.counter <= avg_rating|add:"0.5" %}
+                                                                                                                                                <i class="bi bi-star-half text-warning">
+                                                                                                                                                </i>
+                                                                                                                                            {% else %}
+                                                                                                                                            <i class="bi bi-star text-warning">
+                                                                                                                                            </i>
+                                                                                                                                        {% endif %}
+                                                                                                                                    {% endfor %}
+                                                                                                                                </div>
+                                                                                                                                <p class="text-secondary small mb-0">
+                                                                                                                                    {{ review_count }}
+                                                                                                                                    review{{ review_count|pluralize }}
+                                                                                                                                </p>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                         <div class="col-lg-8">
+                                                                                                                             {% if reviews %}
+                                                                                                                                 <div class="d-flex flex-column gap-3">
+                                                                                                                                     {% for review in reviews %}
+                                                                                                                                         <div class="review-card">
+                                                                                                                                             <div class="d-flex justify-content-between align-items-start mb-2">
+                                                                                                                                                 <div class="d-flex align-items-center gap-2">
+                                                                                                                                                     <div class="review-avatar">
+                                                                                                                                                         {% if review.user.profile.avatar %}
+                                                                                                                                                             <img src="{{ review.user.profile.avatar.url }}" alt="{{ review.user.username }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                                                                                                                                         {% else %}
+                                                                                                                                                             <i class="bi bi-person-circle fs-4"></i>
+                                                                                                                                                         {% endif %}
+                                                                                                                                                     </div>
+                                                                                                                                                     <div>
+                                                                                                                                                         <h6 class="fw-bold mb-0 small">
+                                                                                                                                                             {{ review.user.get_full_name|default:review.user.username }}
+                                                                                                                                                         </h6>
+                                                                                                                                                         <small class="text-secondary">
+                                                                                                                                                             {{ review.created_at|date:"M j, Y" }}
+                                                                                                                                                         </small>
+                                                                                                                                                     </div>
+                                                                                                                                                 </div>
+                                                                                                                                                 <div class="product-rating">
+                                                                                                                                                     {% for i in '12345'|make_list %}
+                                                                                                                                                          {% if forloop.counter <= review.rating %}
+                                                                                                                                                                 <i class="bi bi-star-fill text-warning">
+                                                                                                                                                                 </i>
+                                                                                                                                                             {% else %}
+                                                                                                                                                             <i class="bi bi-star text-warning">
+                                                                                                                                                             </i>
+                                                                                                                                                         {% endif %}
+                                                                                                                                                     {% endfor %}
+                                                                                                                                                 </div>
+                                                                                                                                             </div>
+                                                                                                                                             <p class="text-secondary small mb-0">
+                                                                                                                                                 {{ review.comment }}
+                                                                                                                                             </p>
+                                                                                                                                         </div>
+                                                                                                                                     {% endfor %}
+                                                                                                                                 </div>
+                                                                                                                             {% else %}
+                                                                                                                             <div class="text-center py-4">
+                                                                                                                                 <i class="bi bi-chat-square-text" style="font-size: 2.5rem; color: var(--secondary);">
+                                                                                                                                 </i>
+                                                                                                                                 <p class="text-secondary mt-2 mb-0">
+                                                                                                                                     No reviews yet. Be the first to review this product!</p>
+                                                                                                                                 </div>
+                                                                                                                             {% endif %}
+                                                                                                                             {# ─── Review Form ─── #}
+                                                                                                                             <hr class="my-4">
+                                                                                                                             {% if user.is_authenticated %}
+                                                                                                                                 {% if has_reviewed %}
+                                                                                                                                     <div class="alert alert-info d-flex align-items-center gap-2 mb-0" role="alert">
+                                                                                                                                         <i class="bi bi-check-circle-fill"></i>
+                                                                                                                                         <span>You have already reviewed this product.</span>
+                                                                                                                                     </div>
+                                                                                                                                 {% else %}
+                                                                                                                                     <div class="bg-light rounded-4 p-4">
+                                                                                                                                         <h5 class="fw-bold mb-3">Write a Review</h5>
+                                                                                                                                         <form method="post">
+                                                                                                                                             {% csrf_token %}
+                                                                                                                                             <div class="mb-3">
+                                                                                                                                                 <label class="form-label fw-semibold small">Your Rating</label>
+                                                                                                                                                 <div class="d-flex gap-2" id="starRating">
+                                                                                                                                                     {% for i in '12345'|make_list %}
+                                                                                                                                                         <input type="radio" class="btn-check" name="rating" id="rating{{ i }}" value="{{ forloop.counter }}" {% if forloop.counter == 5 %}checked{% endif %}>
+                                                                                                                                                         <label class="rating-star btn btn-outline-warning px-3" for="rating{{ i }}" title="{{ i }} star{{ i|pluralize }}">
+                                                                                                                                                             <i class="bi bi-star-fill fs-5"></i>
+                                                                                                                                                         </label>
+                                                                                                                                                     {% endfor %}
+                                                                                                                                                 </div>
+                                                                                                                                                 {% if form.rating.errors %}
+                                                                                                                                                     <div class="text-danger small mt-1">{{ form.rating.errors }}</div>
+                                                                                                                                                 {% endif %}
+                                                                                                                                             </div>
+                                                                                                                                             <div class="mb-3">
+                                                                                                                                                 <label class="form-label fw-semibold small">Your Review</label>
+                                                                                                                                                 <textarea name="comment" class="form-control" rows="4" placeholder="Share your experience with this product..." required>{{ form.comment.value|default:'' }}</textarea>
+                                                                                                                                                 {% if form.comment.errors %}
+                                                                                                                                                     <div class="text-danger small mt-1">{{ form.comment.errors }}</div>
+                                                                                                                                                 {% endif %}
+                                                                                                                                             </div>
+                                                                                                                                             <button type="submit" class="btn btn-primary px-4">
+                                                                                                                                                 <i class="bi bi-send me-2"></i>
+                                                                                                                                                 Submit Review
+                                                                                                                                             </button>
+                                                                                                                                         </form>
+                                                                                                                                     </div>
+                                                                                                                                 {% endif %}
+                                                                                                                             {% else %}
+                                                                                                                                 <div class="text-center py-3">
+                                                                                                                                     <p class="text-secondary mb-2">Please <a href="{% url 'accounts:login' %}?next={% url 'store:product_detail' slug=product.slug %}">log in</a> to write a review.</p>
+                                                                                                                                 </div>
+                                                                                                                             {% endif %}
+                                                                                                                         </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                                {# Shipping Tab #}
+                                                                                                                <div class="tab-pane fade" id="shipping">
+                                                                                                                    <div class="row g-4">
+                                                                                                                        <div class="col-md-4">
+                                                                                                                            <div class="text-center p-4">
+                                                                                                                                <i class="bi bi-truck fs-1 text-primary mb-3 d-block">
+                                                                                                                                </i>
+                                                                                                                                <h6 class="fw-bold">
+                                                                                                                                    Free Shipping</h6>
+                                                                                                                                    <p class="text-secondary small mb-0">
+                                                                                                                                        Free standard shipping on all orders over GHs500. Delivery in 3–5 business days.</p>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                                <div class="col-md-4">
+                                                                                                                                    <div class="text-center p-4">
+                                                                                                                                        <i class="bi bi-arrow-repeat fs-1 text-primary mb-3 d-block">
+                                                                                                                                        </i>
+                                                                                                                                        <h6 class="fw-bold">
+                                                                                                                                            Easy Returns</h6>
+                                                                                                                                            <p class="text-secondary small mb-0">
+                                                                                                                                                Not satisfied? Return within 30 days for a full refund. No questions asked.</p>
+                                                                                                                                            </div>
+                                                                                                                                        </div>
+                                                                                                                                        <div class="col-md-4">
+                                                                                                                                            <div class="text-center p-4">
+                                                                                                                                                <i class="bi bi-shield-check fs-1 text-primary mb-3 d-block">
+                                                                                                                                                </i>
+                                                                                                                                                <h6 class="fw-bold">
+                                                                                                                                                    Secure Payment</h6>
+                                                                                                                                                    <p class="text-secondary small mb-0">
+                                                                                                                                                        Your payment information is encrypted and secure. We accept Visa, MC, PayPal.</p>
+                                                                                                                                                    </div>
+                                                                                                                                                </div>
+                                                                                                                                            </div>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                            </section>
+                                                             {# ─── Related Products ─── #}
+                                                             {% if related_products %}
+                                                                 <section class="bg-white py-5">
+                                                                     <div class="container">
+                                                                         <div class="d-flex flex-wrap justify-content-between align-items-center mb-5">
+                                                                             <div>
+                                                                                 <span class="badge bg-warning bg-opacity-10 text-warning mb-2 px-3 py-2">
+                                                                                     Related</span>
+                                                                                     <h2 class="fw-bold display-6 mb-1">
+                                                                                         Related Products</h2>
+                                                                                         <p class="text-secondary fs-5 mb-0">
+                                                                                             More from {{ product.category.name }}
+                                                                                         </p>
+                                                                                     </div>
+                                                                                     <a href="{% url 'store:product_list' %}?category={{ product.category.slug }}" class="btn btn-outline-primary rounded-pill px-4 mt-3 mt-md-0">
+                                                                                         View All →</a>
+                                                                                     </div>
+                                                                                     <div class="row g-4">
+                                                                                         {% for related in related_products %}
+                                                                                             <div class="col-6 col-md-4 col-lg-3">
+                                                                                                 <div class="product-card" data-href="{{ related.get_absolute_url }}">
+                                                                                                     <div class="product-img">
+                                                                                                         {% if related.image %}
+                                                                                                             <img src="{{ related.image.url }}" alt="{{ related.name }}" style="width: 100%; height: 100%;">
+                                                                                                             {% else %}
+                                                                                                             <i class="bi bi-box-seam">
+                                                                                                             </i>
+                                                                                                         {% endif %}
+                                                                                                         <button class="wishlist-btn" data-product-id="{{ related.pk }}">
+                                                                                                             <i class="bi bi-heart">
+                                                                                                             </i>
+                                                                                                         </button>
+                                                                                                     </div>
+                                                                                                     <div class="card-body">
+                                                                                                         <a href="{{ related.get_absolute_url }}" class="product-title">
+                                                                                                             {{ related.name }}
+                                                                                                         </a>
+                                                                                                         <div class="product-rating mb-1">
+                                                                                                             {% with ''|center:4 as range %}
+                                                                                                                 {% for _ in range %}
+                                                                                                                     <i class="bi bi-star-fill">
+                                                                                                                     </i>
+                                                                                                                 {% endfor %}
+                                                                                                             {% endwith %}
+                                                                                                             <i class="bi bi-star">
+                                                                                                             </i>
+                                                                                                             <span class="text-secondary ms-1">
+                                                                                                                 ({{ related.reviews.count }}
+                                                                                                                 )</span>
+                                                                                                             </div>
+                                                                                                             <div class="product-price">
+                                                                                                                 GHs{{related.price|intcomma}}
+                                                                                                             </div>
+                                                                                                             <a href="{{ related.get_absolute_url }}" class="btn btn-primary btn-sm w-100 mt-2">
+                                                                                                                 <i class="bi bi-eye me-1">
+                                                                                                                 </i>
+                                                                                                                 View Details                        </a>
+                                                                                                             </div>
+                                                                                                         </div>
+                                                                                                     </div>
+                                                                                                 {% endfor %}
+                                                                                             </div>
+                                                                                         </div>
+                                                                                     </section>
+                                                                                 {% endif %}
+                                                                                                                                        {% endblock %}
+                                                                                                                                        {% block extra_scripts %}
+                                                                                                                                            <script>
+                                                                                                                                                document.addEventListener('DOMContentLoaded', function () {        const mainImg = document.getElementById('mainImage');        const thumbs = document.querySelectorAll('.gallery-thumb');        thumbs.forEach(function (thumb) {            thumb.addEventListener('click', function () {                thumbs.forEach(function (t) { t.classList.remove('active'); });                this.classList.add('active');                if (mainImg) mainImg.src = this.dataset.src;            });        });        const addToCartBtn = document.querySelector('.add-to-cart-btn');        if (addToCartBtn && !addToCartBtn.disabled) {            addToCartBtn.addEventListener('click', function () {                const original = this.innerHTML;                this.innerHTML = '
+                                                                                                                                                        <i class="bi bi-check-lg me-2">
+                                                                                                                                                        </i>
+                                                                                                                                                        Added!';                this.classList.remove('btn-primary');                this.classList.add('btn-success');                setTimeout(() =>
+                                                                                                                                                        {                    this.innerHTML = original;                    this.classList.remove('btn-success');                    this.classList.add('btn-primary');                }, 1500);            });        }    });</script>
+                                                                                                                                                    {% endblock %}

@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+    My Profile — ShopExpress
+{% endblock %}
+{% block content %}
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                My Profile</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'core:home' %}">
+                                Home</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Profile</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+                <section class="container my-5">
+                    <div class="row g-4">
+                        <div class="col-lg-4">
+                            <div class="card shadow-sm border-0 rounded-3 text-center p-4">
+                                <div class="mb-3">
+                                    {% if profile.avatar %}
+                                        <img src="{{ profile.avatar.url }}" alt="Avatar" class="rounded-circle" style="width: 96px; height: 96px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="mx-auto bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 96px; height: 96px; font-size: 3rem; color: var(--secondary);">
+                                            <i class="bi bi-person-circle"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <h5 class="fw-bold">
+                                    {{ user.get_full_name|default:user.username }}
+                                </h5>
+                                <p class="text-secondary small">
+                                    @{{ user.username }}
+                                </p>
+                                <hr>
+                                    <div class="d-flex justify-content-around">
+                                        <div>
+                                            <h6 class="fw-bold text-primary mb-0">
+                                                {{ user.orders.count }}
+                                            </h6>
+                                            <small class="text-secondary">
+                                                Orders</small>
+                                            </div>
+                                            <div>
+                                                <h6 class="fw-bold text-primary mb-0">
+                                                    {{ user.wishlist.count }}
+                                                </h6>
+                                                <small class="text-secondary">
+                                                    Wishlist</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card shadow-sm border-0 rounded-3 mt-3 p-3">
+                                            <div class="d-grid gap-2">
+                                                <a href="{% url 'accounts:edit_profile' %}" class="btn btn-outline-primary w-100">
+                                                    <i class="bi bi-pencil me-2">
+                                                    </i>
+                                                    Edit Profile                    </a>
+                                                    <a href="{% url 'accounts:change_password' %}" class="btn btn-outline-secondary w-100">
+                                                        <i class="bi bi-key me-2">
+                                                        </i>
+                                                        Change Password                    </a>
+                                                        <a href="{% url 'accounts:wishlist' %}" class="btn btn-outline-danger w-100">
+                                                            <i class="bi bi-heart me-2">
+                                                            </i>
+                                                            Wishlist                    </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-8">
+                                                    <div class="card shadow-sm border-0 rounded-3">
+                                                        <div class="card-header bg-white border-0 pt-4">
+                                                            <h5 class="fw-bold mb-0">
+                                                                Account Details</h5>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <div class="row g-3">
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label small fw-semibold text-secondary">
+                                                                            Username</label>
+                                                                            <p class="fw-semibold mb-0">
+                                                                                {{ user.username }}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label small fw-semibold text-secondary">
+                                                                                Email</label>
+                                                                                {% if user.email %}
+                                                                                    <p class="fw-semibold mb-0">{{ user.email }}</p>
+                                                                                {% else %}
+                                                                                    <p class="fw-semibold mb-0"><span class="text-secondary">Not set</span></p>
+                                                                                {% endif %}
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <label class="form-label small fw-semibold text-secondary">
+                                                                                    First Name</label>
+                                                                                    {% if user.first_name %}
+                                                                                        <p class="mb-0">{{ user.first_name }}</p>
+                                                                                    {% else %}
+                                                                                        <p class="mb-0"><span class="text-secondary">—</span></p>
+                                                                                    {% endif %}
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label small fw-semibold text-secondary">
+                                                                                        Last Name</label>
+                                                                                        {% if user.last_name %}
+                                                                                            <p class="mb-0">{{ user.last_name }}</p>
+                                                                                        {% else %}
+                                                                                            <p class="mb-0"><span class="text-secondary">—</span></p>
+                                                                                        {% endif %}
+                                                                                    </div>
+                                                                                                <div class="col-12">
+                                                                                                    <label class="form-label small fw-semibold text-secondary">
+                                                                                                        Member Since</label>
+                                                                                                        <p class="mb-0">
+                                                                                                            {{ user.date_joined|date:"F j, Y" }}
+                                                                                                        </p>
+                                                                                                    </div>
+                                                                                                    <div class="col-12">
+                                                                                                        <label class="form-label small fw-semibold text-secondary">
+                                                                                                            Last Login</label>
+                                                                                                            <p class="mb-0">
+                                                                                                                {{ user.last_login|date:"F j, Y \a\t g:i A" }}
+                                                                                                            </p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                             <div class="card shadow-sm border-0 rounded-3 mt-4">
+                                                                                                <div class="card-header bg-white border-0 pt-4 d-flex justify-content-between align-items-center">
+                                                                                                    <h5 class="fw-bold mb-0">
+                                                                                                        Recent Orders</h5>
+                                                                                                        <a href="{% url 'orders:order_list' %}" class="btn btn-sm btn-primary">
+                                                                                                            View All</a>
+                                                                                                        </div>
+                                                                                                        <div class="card-body">
+                                                                                                            {% if recent_orders %}
+                                                                                                                <div class="table-responsive">
+                                                                                                                    <table class="table align-middle mb-0">
+                                                                                                                        <thead class="table-light">
+                                                                                                                            <tr>
+                                                                                                                                <th>Order</th>
+                                                                                                                                <th>Date</th>
+                                                                                                                                <th>Status</th>
+                                                                                                                                <th>Total</th>
+                                                                                                                            </tr>
+                                                                                                                        </thead>
+                                                                                                                        <tbody>
+                                                                                                                            {% for order in recent_orders %}
+                                                                                                                                <tr>
+                                                                                                                                    <td class="fw-semibold">#{{ order.pk }}</td>
+                                                                                                                                    <td class="small">{{ order.created_at|date:"M d, Y" }}</td>
+                                                                                                                                    <td>
+                                                                                                                                        <span class="badge rounded-pill
+                                                                                                                                            {% if order.status == 'completed' %}bg-success
+                                                                                                                                            {% elif order.status == 'cancelled' %}bg-danger
+                                                                                                                                            {% elif order.status == 'processing' %}bg-warning text-dark
+                                                                                                                                            {% else %}bg-secondary{% endif %}">
+                                                                                                                                            {{ order.get_status_display }}
+                                                                                                                                        </span>
+                                                                                                                                    </td>
+                                                                                                                                    <td class="fw-semibold">GHs{{ order.total|intcomma }}</td>
+                                                                                                                                </tr>
+                                                                                                                            {% endfor %}
+                                                                                                                        </tbody>
+                                                                                                                    </table>
+                                                                                                                </div>
+                                                                                                            {% else %}
+                                                                                                                <div class="text-center py-3">
+                                                                                                                    <i class="bi bi-box" style="font-size: 2.5rem; color: var(--secondary);"></i>
+                                                                                                                    <p class="text-secondary mt-2 mb-0">You haven't placed any orders yet.</p>
+                                                                                                                </div>
+                                                                                                            {% endif %}
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </section>
+                                                                                        {% endblock %}

@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+    Order #{{ order.pk }}
+    — ShopExpress
+{% endblock %}
+{% block content %}
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                Order #{{ order.pk }}
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'core:home' %}">
+                            Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'orders:order_list' %}">
+                                Orders</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Order #{{ order.pk }}
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <section class="container my-5">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+                    <div>
+                        <h4 class="fw-bold mb-1">
+                            Order #{{ order.pk }}
+                        </h4>
+                        <p class="text-secondary mb-0">
+                            Placed on {{ order.created_at|date:"F d, Y" }}
+                            at {{ order.created_at|date:"g:i A" }}
+                        </p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'orders:order_invoice' order.pk %}" class="btn btn-outline-primary" target="_blank">
+                            <i class="bi bi-receipt me-2">
+                            </i>
+                            Invoice            </a>
+                            <a href="{% url 'orders:order_list' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2">
+                                </i>
+                                All Orders            </a>
+                            </div>
+                        </div>
+                        <div class="row g-4">
+                            {# Status Timeline #}
+                            <div class="col-12">
+                                <div class="card shadow-sm border-0 rounded-3">
+                                    <div class="card-body">
+                                        <h5 class="fw-bold mb-4">
+                                            Order Status</h5>
+                                            {% with status=order.status %}
+                                                <div class="d-flex justify-content-between position-relative">
+                                                    <div class="position-absolute top-50 start-0 end-0 border-top" style="z-index: 0; border-color: #dee2e6;">
+                                                    </div>
+                                                    {% for s, label in status_choices %}
+                                                        <div class="text-center position-relative" style="z-index: 1; width: 25%;">
+                                                            <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center
+                                                                {% if s == status %}
+                                                                    bg-primary text-white shadow-sm
+                                                                {% elif status == 'cancelled' and s == 'cancelled' %}
+                                                                bg-danger text-white
+                                                            {% elif status == 'completed' or s == 'pending' or s == 'processing' and status == 'completed' %}
+                                                            bg-success text-white
+                                                        {% elif s == 'pending' or s == 'processing' and status == 'processing' or s == 'pending' and status != 'pending' %}
+                                                        bg-success text-white
+                                                    {% else %}
+                                                    bg-light text-secondary
+                                                {% endif %}"                                style="width: 40px; height: 40px; font-size: 1rem;">
+                                                {% if s == 'completed' %}
+                                                    <i class="bi bi-check-lg">
+                                                    </i>
+                                                {% elif s == 'cancelled' %}
+                                                <i class="bi bi-x-lg">
+                                                </i>
+                                            {% elif s == 'processing' %}
+                                            <i class="bi bi-gear">
+                                            </i>
+                                        {% else %}
+                                        <i class="bi bi-clock">
+                                        </i>
+                                    {% endif %}
+                                </div>
+                                <small class="d-block mt-2 fw-semibold
+                                    {% if s == status %}
+                                        text-primary
+                                    {% else %}
+                                    text-secondary
+                                {% endif %}">
+                                {{ label }}
+                            </small>
+                            <small class="text-secondary d-none d-md-block">
+                                {% if s == 'pending' and status == 'pending' %}
+                                    Current
+                                {% elif s == 'processing' and status == 'processing' %}
+                                Current
+                            {% elif s == 'completed' and status == 'completed' %}
+                            Complete
+                        {% elif s == 'cancelled' and status == 'cancelled' %}
+                        Cancelled
+                    {% endif %}
+                </small>
+            </div>
+        {% endfor %}
+    </div>
+{% endwith %}
+</div>
+</div>
+</div>
+{# Shipping Info #}
+<div class="col-lg-6">
+    <div class="card shadow-sm border-0 rounded-3 h-100">
+        <div class="card-body">
+            <h5 class="fw-bold mb-3">
+                <i class="bi bi-truck me-2">
+                </i>
+                Shipping Address</h5>
+                <p class="mb-1 fw-semibold">
+                    {{ order.shipping_name }}
+                </p>
+                <p class="mb-1 text-secondary">
+                    {{ order.address }}
+                </p>
+                <p class="mb-1 text-secondary">
+                    {{ order.city }}
+                    , {{ order.region }}
+                </p>
+                <p class="mb-1 text-secondary">
+                    {{ order.phone }}
+                </p>
+                <p class="mb-0 text-secondary">
+                    {{ order.email }}
+                </p>
+            </div>
+        </div>
+    </div>
+    {# Order Summary #}
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0 rounded-3 h-100">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-credit-card me-2">
+                    </i>
+                    Payment Summary</h5>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary">
+                            Subtotal</span>
+                            <span class="fw-semibold">
+                                GHs{{order.subtotal|intcomma}}
+                            </span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-secondary">
+                                Shipping</span>
+                                <span class="fw-semibold text-success">
+                                    Free</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-secondary">
+                                        Tax</span>
+                                        <span class="fw-semibold">
+                                            GHs{{order.tax|floatformat:2|intcomma }}
+                                        </span>
+                                    </div>
+                                    <hr>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="fw-bold fs-5">
+                                                Total</span>
+                                                <span class="fw-bold fs-5">
+                                                    GHs{{order.total|floatformat:2|intcomma }}
+                                                </span>
+                                            </div>
+                                            {% if order.order_notes %}
+                                                <hr>
+                                                    <div>
+                                                        <small class="fw-semibold">
+                                                            Order Notes</small>
+                                                            <p class="text-secondary small mb-0">
+                                                                {{ order.order_notes }}
+                                                            </p>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {# Items #}
+                                        <div class="col-12">
+                                            <div class="card shadow-sm border-0 rounded-3">
+                                                <div class="card-body p-3 p-md-4">
+                                                    <h5 class="fw-bold mb-3">
+                                                        <i class="bi bi-box me-2">
+                                                        </i>
+                                                        Order Items</h5>
+                                                        <div class="table-responsive">
+                                                            <table class="table align-middle">
+                                                                <thead class="table-light">
+                                                                    <tr>
+                                                                        <th style="width: 60px;">
+                                                                        </th>
+                                                                        <th>
+                                                                            Product</th>
+                                                                            <th>
+                                                                                Price</th>
+                                                                                <th>
+                                                                                    Qty</th>
+                                                                                    <th>
+                                                                                        Total</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    {% for item in order.items.all %}
+                                                                                        <tr>
+                                                                                            <td>
+                                                                                                {% if item.product and item.product.image %}
+                                                                                                    <img src="{{ item.product.image.url }}" alt="{{ item.product_name }}"                                             class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                                                                                    {% else %}
+                                                                                                    <div class="bg-light rounded d-flex align-items-center justify-content-center"                                             style="width: 50px; height: 50px;">
+                                                                                                        <i class="bi bi-box-seam text-secondary">
+                                                                                                        </i>
+                                                                                                    </div>
+                                                                                                {% endif %}
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <span class="fw-semibold">
+                                                                                                    {{ item.product_name }}
+                                                                                                </span>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                GHs{{item.price|intcomma}}
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                {{ item.quantity }}
+                                                                                            </td>
+                                                                                            <td class="fw-bold">
+                                                                                                GHs{{item.total_price|intcomma}}
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    {% endfor %}
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </section>
+                                                {% endblock %}

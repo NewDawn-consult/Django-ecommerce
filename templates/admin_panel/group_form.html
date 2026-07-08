@@ -1,0 +1,32 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}{{ title }} — Admin — ShopExpress{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
+<script src="{% static 'admin/js/core.js' %}"></script>
+<script src="{% static 'admin/js/SelectBox.js' %}"></script>
+<script src="{% static 'admin/js/SelectFilter2.js' %}"></script>
+{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-1">{{ title }}</h4>
+        <p class="text-secondary small mb-0">Manage group</p>
+    </div>
+    <a href="{% url 'admin_panel:group_list' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Back to Groups
+    </a>
+</div>
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body p-4">
+        <form method="post">
+            {% csrf_token %}
+            {% crispy form %}
+            <button type="submit" class="btn btn-primary mt-3">
+                <i class="bi bi-check-lg me-1"></i> {{ title }}
+            </button>
+            <a href="{% url 'admin_panel:group_list' %}" class="btn btn-outline-secondary mt-3 ms-2">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

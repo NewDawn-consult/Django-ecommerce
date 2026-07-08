@@ -1,0 +1,80 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% load static %}
+{% block title %}
+    Customers — Admin — ShopExpress
+{% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">
+                Customers</h4>
+                <p class="text-secondary small mb-0">
+                    {{ customers|length }}
+                    customer{{ customers|length|pluralize }}
+                </p>
+            </div>
+        </div>
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="table-responsive">
+                <table class="table admin-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>
+                                Name</th>
+                                <th>
+                                    Username</th>
+                                    <th>
+                                        Email</th>
+                                        <th>
+                                            Orders</th>
+                                            <th>
+                                                Joined</th>
+                                                <th>
+                                                    Last Login</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for c in customers %}
+                                                    <tr>
+                                                        <td class="fw-semibold small">
+                                                            {% if c.get_full_name %}
+                                                                {{ c.get_full_name }}
+                                                            {% else %}
+                                                                <span class="text-secondary">&mdash;</span>
+                                                            {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                {{ c.username }}
+                                                            </td>
+                                                            <td class="small text-secondary">
+                                                                {% if c.email %}
+                                                                    {{ c.email }}
+                                                                {% else %}
+                                                                    <span class="text-secondary">&mdash;</span>
+                                                                {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    {{ c.orders.count }}
+                                                                </td>
+                                                                <td class="small text-secondary">
+                                                                    {{ c.date_joined|date:"M d, Y" }}
+                                                                </td>
+                                                                <td class="small text-secondary">
+                                                                    {% if c.last_login %}
+                                                                        {{ c.last_login|date:"M d, Y" }}
+                                                                    {% else %}
+                                                                        <span class="text-secondary">Never</span>
+                                                                    {% endif %}
+                                                                    </td>
+                                                                </tr>
+                                                            {% empty %}
+                                                            <tr>
+                                                                <td colspan="6" class="text-center text-secondary py-4">
+                                                                    No customers yet</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        {% endblock %}

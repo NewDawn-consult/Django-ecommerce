@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Contact Us — ShopExpress
+{% endblock %}
+{% block content %}
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                Contact Us</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'core:home' %}">
+                                Home</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Contact</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+                <section class="container my-5">
+                    <div class="row g-5">
+                        {# Contact Form #}
+                        <div class="col-lg-7">
+                            <div class="card shadow-sm border-0 rounded-3">
+                                <div class="card-body p-4">
+                                    <h4 class="fw-bold mb-1">
+                                        Send us a message</h4>
+                                        <p class="text-secondary mb-4">
+                                            We'd love to hear from you. Fill out the form and we'll respond within 24 hours.</p>
+                                            <form method="post" novalidate>
+                                                {% csrf_token %}
+                                                <div class="row g-3">
+                                                    <div class="col-sm-6">
+                                                        <label class="form-label fw-semibold small">
+                                                            Full Name
+                                                            <span class="text-danger">
+                                                                *</span>
+                                                            </label>
+                                                            {{ form.name }}
+                                                            {% if form.name.errors %}
+                                                                <div class="text-danger small mt-1">
+                                                                    {{ form.name.errors.0 }}
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <label class="form-label fw-semibold small">
+                                                                Email
+                                                                <span class="text-danger">
+                                                                    *</span>
+                                                                </label>
+                                                                {{ form.email }}
+                                                                {% if form.email.errors %}
+                                                                    <div class="text-danger small mt-1">
+                                                                        {{ form.email.errors.0 }}
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <label class="form-label fw-semibold small">
+                                                                    Subject
+                                                                    <span class="text-danger">
+                                                                        *</span>
+                                                                    </label>
+                                                                    {{ form.subject }}
+                                                                    {% if form.subject.errors %}
+                                                                        <div class="text-danger small mt-1">
+                                                                            {{ form.subject.errors.0 }}
+                                                                        </div>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    <label class="form-label fw-semibold small">
+                                                                        Message
+                                                                        <span class="text-danger">
+                                                                            *</span>
+                                                                        </label>
+                                                                        {{ form.message }}
+                                                                        {% if form.message.errors %}
+                                                                            <div class="text-danger small mt-1">
+                                                                                {{ form.message.errors.0 }}
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                    <div class="col-12">
+                                                                        <button type="submit" class="btn btn-primary btn-lg px-5">
+                                                                            <i class="bi bi-send me-2">
+                                                                            </i>
+                                                                            Send Message                                </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {# Business Info #}
+                                                    <div class="col-lg-5">
+                                                        <div class="card shadow-sm border-0 rounded-3 mb-4">
+                                                            <div class="card-body p-4">
+                                                                <h4 class="fw-bold mb-3">
+                                                                    Get in Touch</h4>
+                                                                    <p class="text-secondary small mb-4">
+                                                                        Have a question, feedback, or need assistance? We're here to help.</p>
+                                                                        <div class="d-flex gap-3 mb-3">
+                                                                            <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"                             style="width: 48px; height: 48px;">
+                                                                                <i class="bi bi-geo-alt text-primary">
+                                                                                </i>
+                                                                            </div>
+                                                                            <div>
+                                                                                <h6 class="fw-semibold mb-1">
+                                                                                    Address</h6>
+                                                                                    <p class="text-secondary small mb-0">
+                                                                                        123 Commerce Street
+                                                                                        <br>
+                                                                                            Accra, Greater Accra
+                                                                                            <br>
+                                                                                                Ghana</p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="d-flex gap-3 mb-3">
+                                                                                            <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"                             style="width: 48px; height: 48px;">
+                                                                                                <i class="bi bi-envelope text-primary">
+                                                                                                </i>
+                                                                                            </div>
+                                                                                            <div>
+                                                                                                <h6 class="fw-semibold mb-1">
+                                                                                                    Email</h6>
+                                                                                                    <p class="text-secondary small mb-0">
+                                                                                                        <a href="mailto:support@shopexpress.com" class="text-decoration-none">
+                                                                                                            support@shopexpress.com</a>
+                                                                                                            <br>
+                                                                                                                <a href="mailto:info@shopexpress.com" class="text-decoration-none">
+                                                                                                                    info@shopexpress.com</a>
+                                                                                                                </p>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="d-flex gap-3 mb-3">
+                                                                                                            <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"                             style="width: 48px; height: 48px;">
+                                                                                                                <i class="bi bi-telephone text-primary">
+                                                                                                                </i>
+                                                                                                            </div>
+                                                                                                            <div>
+                                                                                                                <h6 class="fw-semibold mb-1">
+                                                                                                                    Phone</h6>
+                                                                                                                    <p class="text-secondary small mb-0">
+                                                                                                                        <a href="tel:+233500000000" class="text-decoration-none">
+                                                                                                                            +233 50 000 0000</a>
+                                                                                                                            <br>
+                                                                                                                                <a href="tel:+233302000000" class="text-decoration-none">
+                                                                                                                                    +233 30 200 0000</a>
+                                                                                                                                </p>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                        <div class="d-flex gap-3">
+                                                                                                                            <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"                             style="width: 48px; height: 48px;">
+                                                                                                                                <i class="bi bi-clock text-primary">
+                                                                                                                                </i>
+                                                                                                                            </div>
+                                                                                                                            <div>
+                                                                                                                                <h6 class="fw-semibold mb-1">
+                                                                                                                                    Business Hours</h6>
+                                                                                                                                    <p class="text-secondary small mb-0">
+                                                                                                                                        Monday – Friday: 8:00 AM – 6:00 PM
+                                                                                                                                        <br>
+                                                                                                                                            Saturday: 9:00 AM – 4:00 PM
+                                                                                                                                            <br>
+                                                                                                                                                Sunday: Closed                            </p>
+                                                                                                                                            </div>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                                {# Google Maps Placeholder #}
+                                                                                                                                <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+                                                                                                                                    <div class="bg-light d-flex align-items-center justify-content-center flex-column"                     style="min-height: 240px;">
+                                                                                                                                        <i class="bi bi-map text-secondary mb-2" style="font-size: 2.5rem;">
+                                                                                                                                        </i>
+                                                                                                                                        <p class="text-secondary fw-semibold mb-1">
+                                                                                                                                            Map Placeholder</p>
+                                                                                                                                            <p class="text-secondary small mb-0">
+                                                                                                                                                123 Commerce Street, Accra, Ghana</p>
+                                                                                                                                                <a href="https://maps.google.com/?q=Accra+Ghana" target="_blank"                       class="btn btn-outline-primary btn-sm mt-3">
+                                                                                                                                                    <i class="bi bi-box-arrow-up-right me-1">
+                                                                                                                                                    </i>
+                                                                                                                                                    Open in Google Maps                    </a>
+                                                                                                                                                </div>
+                                                                                                                                            </div>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                </section>
+                                                                                                                            {% endblock %}

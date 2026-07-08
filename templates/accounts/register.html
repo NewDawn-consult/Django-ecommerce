@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Register — ShopExpress
+{% endblock %}
+{% block content %}
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                Create Account</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'core:home' %}">
+                                Home</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Register</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+                <div class="container my-5">
+                    <div class="row justify-content-center">
+                        <div class="col-md-5">
+                            <div class="card auth-card shadow-sm">
+                                <div class="card-header text-center">
+                                    <h4 class="fw-bold">
+                                        Create Your Account</h4>
+                                        <p class="text-secondary small mb-0">
+                                            Join ShopExpress and start shopping today</p>
+                                        </div>
+                                        <div class="card-body">
+                                            <form method="post" novalidate>
+                                                {% csrf_token %}
+                                                {{ form|crispy }}
+                                                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold mt-2">
+                                                    Create Account</button>
+                                                </form>
+                                                <p class="text-center small text-secondary mt-4 mb-0">
+                                                    Already have an account?
+                                                    <a href="{% url 'accounts:login' %}" class="fw-semibold">
+                                                        Login</a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endblock %}

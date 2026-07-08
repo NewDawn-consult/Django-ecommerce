@@ -1,0 +1,86 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% load static %}
+{% block title %}
+    Users — Admin — ShopExpress
+{% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">Manage Users</h4>
+            <p class="text-secondary small mb-0">{{ users|length }} user{{ users|length|pluralize }}</p>
+        </div>
+        {% if can.add_user %}
+            <a href="{% url 'admin_panel:user_add' %}" class="btn btn-primary btn-sm">
+                <i class="bi bi-person-plus me-1"></i> Add User
+            </a>
+        {% endif %}
+    </div>
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="table-responsive">
+            <table class="table admin-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Staff</th>
+                        <th>Superuser</th>
+                        <th>Groups</th>
+                        <th>Joined</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                        <tr>
+                            <td class="fw-semibold small">
+                                {% if u.get_full_name %}{{ u.get_full_name }}{% else %}<span class="text-secondary">&mdash;</span>{% endif %}
+                            </td>
+                            <td>{{ u.username }}</td>
+                            <td class="small text-secondary">{% if u.email %}{{ u.email }}{% else %}<span class="text-secondary">&mdash;</span>{% endif %}</td>
+                            <td>{% if u.is_staff %}<span class="badge bg-success">Yes</span>{% else %}<span class="badge bg-secondary">No</span>{% endif %}</td>
+                            <td>{% if u.is_superuser %}<span class="badge bg-warning text-dark">Yes</span>{% else %}<span class="badge bg-secondary">No</span>{% endif %}</td>
+                            <td>{% for g in u.groups.all %}<span class="badge bg-info text-dark me-1">{{ g.name }}</span>{% empty %}<span class="text-secondary small">&mdash;</span>{% endfor %}</td>
+                            <td class="small text-secondary">{{ u.date_joined|date:"M d, Y" }}</td>
+                            <td>
+                                <div class="d-flex gap-1 flex-wrap">
+                                    {% if u.is_superuser or u.is_staff %}
+                                        <a href="{% url 'admin_panel:user_edit' pk=u.pk %}" class="btn btn-sm btn-outline-primary" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        {% if can.delete_user and u != request.user %}
+                                            <a href="{% url 'admin_panel:user_delete' pk=u.pk %}" class="btn btn-sm btn-outline-danger" title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if u != request.user %}
+                                        <form method="post" class="m-0 d-inline" style="display: inline;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="user_id" value="{{ u.pk }}">
+                                            {% if u.is_staff %}
+                                                <input type="hidden" name="is_staff" value="0">
+                                                <button type="submit" class="btn btn-sm btn-outline-warning" title="Remove Staff">
+                                                    <i class="bi bi-shield-slash"></i>
+                                                </button>
+                                            {% else %}
+                                                <input type="hidden" name="is_staff" value="1">
+                                                <button type="submit" class="btn btn-sm btn-outline-success" title="Make Staff">
+                                                    <i class="bi bi-shield-check"></i>
+                                                </button>
+                                            {% endif %}
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center text-secondary py-4">No users found</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

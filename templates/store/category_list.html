@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Categories — ShopExpress{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Categories</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+                <li class="breadcrumb-item active">Categories</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<section class="container my-5">
+    <div class="row g-4">
+        {% for category in categories %}
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="{{ category.get_absolute_url }}" class="text-decoration-none">
+                    <div class="category-card">
+                        <div class="category-img">
+                            {% if category.image %}
+                                <img src="{{ category.image.url }}" alt="{{ category.name }}">
+                            {% else %}
+                                <i class="bi {{ category.icon }}"></i>
+                            {% endif %}
+                        </div>
+                        <div class="category-card-body">
+                            <h5 class="category-card-title">{{ category.name }}</h5>
+                            <p class="category-card-count">{{ category.product_count }} product{{ category.product_count|pluralize }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <p class="text-secondary">No categories available yet.</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

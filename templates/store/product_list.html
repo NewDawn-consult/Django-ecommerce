@@ -1,0 +1,416 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% load store_extras %}
+
+{% block title %}
+    {% if query %}"{{ query }}" —
+    {% endif %}
+    Shop — ShopExpress
+{% endblock %}
+{% block content %}
+    {% url 'store:product_list' as base_url %}
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                {% if category_slug %}
+                    {{ category_slug|title }}
+                {% else %}
+                Shop
+            {% endif %}
+        </h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'core:home' %}">
+                        Home</a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        {% if category_slug %}
+                            {{ category_slug|title }}
+                        {% else %}
+                        Shop
+                    {% endif %}
+                </li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<section class="container my-5">
+    <div class="row">
+        {# ─── Sidebar Filters ─── #}
+        <div class="col-lg-3 mb-4">
+            <div class="bg-white rounded-3 p-4 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold mb-0">
+                        Filters</h6>
+                        <a href="{% url 'store:product_list' %}" class="small text-decoration-none">
+                            Clear all</a>
+                        </div>
+                        {# Search #}
+                        <form method="get" action="{% url 'store:product_list' %}">
+                            {% if category_slug %}
+                                <input type="hidden" name="category" value="{{ category_slug }}">
+                                {% endif %}
+                                {% if min_price %}
+                                    <input type="hidden" name="min_price" value="{{ min_price }}">
+                                    {% endif %}
+                                    {% if max_price %}
+                                        <input type="hidden" name="max_price" value="{{ max_price }}">
+                                        {% endif %}
+                                        {% if sort %}
+                                            <input type="hidden" name="sort" value="{{ sort }}">
+                                            {% endif %}
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text bg-white border-end-0">
+                                                    <i class="bi bi-search">
+                                                    </i>
+                                                </span>
+                                                <input class="form-control border-start-0" type="search" name="q" value="{{ query }}" placeholder="Search products..." aria-label="Search">
+                                                </div>
+                                            </form>
+                                            {# Categories #}
+                                            <h6 class="fw-bold mb-3">
+                                                Categories</h6>
+                                                <ul class="list-unstyled mb-0">
+                                                    <li class="mb-2">
+                                                        <a href="{{ clear_all_url }}" class="text-decoration-none
+                                                        {% if not category_slug %}
+                                                            fw-bold text-dark
+                                                        {% else %}
+                                                        text-secondary
+                                                    {% endif %}">
+                                                    All Products                        </a>
+                                                </li>
+                                            {% for cat in categories %}
+                                                <li class="mb-2">
+                                                    <a href="{{ category_urls|default:''|get_item:cat.slug }}" class="text-decoration-none d-flex justify-content-between
+                                                        {% if category_slug == cat.slug %}
+                                                            fw-bold text-dark
+                                                        {% else %}
+                                                        text-secondary
+                                                    {% endif %}">
+                                                    {{ cat.name }}
+                                                    <span class="small">
+                                                        ({{ cat.product_count }}
+                                                        )</span>
+                                                    </a>
+                                                </li>
+                                            {% empty %}
+                                            <li class="text-secondary small">
+                                                No categories yet.</li>
+                                            {% endfor %}
+                                        </ul>
+                                        <hr>
+                                            {# Price Range #}
+                                            <h6 class="fw-bold mb-3">
+                                                Price Range</h6>
+                                                <form method="get" action="{% url 'store:product_list' %}">
+                                                    {% if query %}
+                                                        <input type="hidden" name="q" value="{{ query }}">
+                                                        {% endif %}
+                                                        {% if category_slug %}
+                                                            <input type="hidden" name="category" value="{{ category_slug }}">
+                                                            {% endif %}
+                                                            {% if sort %}
+                                                                <input type="hidden" name="sort" value="{{ sort }}">
+                                                                {% endif %}
+                                                                <div class="d-flex gap-2 align-items-center">
+                                                                    <input type="number" class="form-control form-control-sm" name="min_price" value="{{ min_price }}" placeholder="Min" min="0">
+                                                                        <span class="text-secondary">
+                                                                            —</span>
+                                                                            <input type="number" class="form-control form-control-sm" name="max_price" value="{{ max_price }}" placeholder="Max" min="0">
+                                                                            </div>
+                                                                            <button type="submit" class="btn btn-primary btn-sm w-100 mt-3">
+                                                                                Apply Price</button>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                    {# ─── Product Grid ─── #}
+                                                                    <div class="col-lg-9">
+                                                                        {# Toolbar #}
+                                                                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                                                                            <p class="text-secondary mb-0">
+                                                                                Showing
+                                                                                <strong>
+                                                                                    {{ page_obj.start_index }}
+                                                                                </strong>
+                                                                                –
+                                                                                <strong>
+                                                                                    {{ page_obj.end_index }}
+                                                                                </strong>
+                                                                                of
+                                                                                <strong>
+                                                                                    {{ page_obj.paginator.count }}
+                                                                                </strong>
+                                                                                product{{ page_obj.paginator.count|pluralize }}
+                                                                                {% if query %}
+                                                                                    <span class="small">
+                                                                                        for "
+                                                                                        <strong>
+                                                                                            {{ query }}
+                                                                                        </strong>"</span>
+                                                                                    {% endif %}
+                                                                                </p>
+                                                                                 <div class="d-flex align-items-center gap-2">
+                                                                                     <label class="small text-secondary text-nowrap">
+                                                                                         Sort by:</label>
+                                                                                              <select class="form-select form-select-sm" style="width: auto;" onchange="if(this.value) window.location.href=this.value;">
+                                                                                              <option value="{{ sort_urls.newest }}"{% if sort == 'newest' %} selected{% endif %}>Newest</option>
+                                                                                              <option value="{{ sort_urls.price_asc }}"{% if sort == 'price_asc' %} selected{% endif %}>Price: Low → High</option>
+                                                                                              <option value="{{ sort_urls.price_desc }}"{% if sort == 'price_desc' %} selected{% endif %}>Price: High → Low</option>
+                                                                                              <option value="{{ sort_urls.name_asc }}"{% if sort == 'name_asc' %} selected{% endif %}>Name: A → Z</option>
+                                                                                              <option value="{{ sort_urls.name_desc }}"{% if sort == 'name_desc' %} selected{% endif %}>Name: Z → A</option>
+                                                                                          </select>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    {# Active filters #}
+                                                                                                    {% if query or category_slug or min_price or max_price %}
+                                                                                                        <div class="d-flex flex-wrap gap-2 mb-4">
+                                                                                                            <span class="small text-secondary align-self-center">
+                                                                                                                Active filters:</span>
+                                                                                                                 {% if query %}
+                                                                                                                     <span class="badge bg-light text-dark border d-flex align-items-center gap-1">
+                                                                                                                         Search: "{{ query }}"
+                                                                                                                         <a href="{{ clear_search_url }}" class="text-decoration-none text-secondary ms-1">
+                                                                                                                         &times;</a>
+                                                                                                                 </span>
+                                                                                                             {% endif %}
+                                                                                                             {% if category_slug %}
+                                                                                                                 <span class="badge bg-light text-dark border d-flex align-items-center gap-1">
+                                                                                                                     {{ category_slug|title }}
+                                                                                                                     <a href="{{ clear_category_url }}" class="text-decoration-none text-secondary ms-1">
+                                                                                                                     &times;</a>
+                                                                                                             </span>
+                                                                                                         {% endif %}
+                                                                                                         {% if min_price or max_price %}
+                                                                                                             <span class="badge bg-light text-dark border d-flex align-items-center gap-1">
+                                                                                                                 {% if min_price and max_price %}
+                                                                                                                     GHs{{min_price|intcomma}}
+                                                                                                                     – GHs{{max_price|intcomma}}
+                                                                                                                 {% elif min_price %}
+                                                                                                                 ≥ GHs{{min_price|intcomma}}
+                                                                                                             {% elif max_price %}
+                                                                                                             ≤ GHs{{max_price|intcomma}}
+                                                                                                         {% endif %}
+                                                                                                         <a href="{{ clear_price_url }}" class="text-decoration-none text-secondary ms-1">
+                                                                                                         &times;</a>
+                                                                                                 </span>
+                                                                                             {% endif %}
+                                                                                            <a href="{% url 'store:product_list' %}" class="small text-decoration-none align-self-center">
+                                                                                                Clear all</a>
+                                                                                            </div>
+                                                                                        {% endif %}
+                                                                                        {# Products #}
+                                                                                        {% if page_obj %}
+                                                                                            <div class="row g-4">
+                                                                                                {% for product in page_obj %}
+                                                                                                    <div class="col-6 col-md-4">
+                                                                                                     <div class="product-card" data-href="{% url 'store:product_detail' slug=product.slug %}">
+                                                                                                             <div class="product-img">
+                                                                                                                 {% if product.image %}
+                                                                                                                     <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 100%;">
+                                                                                                                    {% else %}
+                                                                                                                    <i class="bi bi-box-seam">
+                                                                                                                    </i>
+                                                                                                                {% endif %}
+                                                                                                                {% if product.stock == 0 %}
+                                                                                                                    <span class="badge bg-dark badge-float">
+                                                                                                                        Out of Stock</span>
+                                                                                                                    {% elif product.featured %}
+                                                                                                                    <span class="badge bg-danger badge-float">
+                                                                                                                        Featured</span>
+                                                                                                                    {% endif %}
+                                                                                                                    <button class="wishlist-btn" data-product-id="{{ product.pk }}">
+                                                                                                                        <i class="bi bi-heart">
+                                                                                                                        </i>
+                                                                                                                    </button>
+                                                                                                                </div>
+                                                                                                                <div class="card-body">
+                                                                                                                    <span class="small text-secondary text-uppercase" style="letter-spacing: 0.5px; font-size: 0.7rem;">
+                                                                                                                        {{ product.category.name }}
+                                                                                                                    </span>
+                                                                                                                     <a href="{% url 'store:product_detail' slug=product.slug %}" class="product-title">
+                                                                                                                         {{ product.name|truncatewords:11 }}
+                                                                                                                    </a>
+                                                                                                                    <div class="product-price">
+                                                                                                                        GHs{{product.price|intcomma}}
+                                                                                                                    </div>
+                                                                                                                    {% if product.stock > 0 %}
+                                                                                                                        <div class="d-flex align-items-center gap-1 mt-1">
+                                                                                                                             {% if product.stock < 5 %}
+                                                                                                                                    <span class="small text-warning">
+                                                                                                                                        <i class="bi bi-exclamation-circle">
+                                                                                                                                        </i>
+                                                                                                                                        Only {{ product.stock }}
+                                                                                                                                        left</span>
+                                                                                                                                    {% else %}
+                                                                                                                                    <span class="small text-success">
+                                                                                                                                        <i class="bi bi-check-circle">
+                                                                                                                                        </i>
+                                                                                                                                        In Stock</span>
+                                                                                                                                    {% endif %}
+                                                                                                                                </div>
+                                                                                                                            {% else %}
+                                                                                                                            <div class="d-flex align-items-center gap-1 mt-1">
+                                                                                                                                <span class="small text-danger">
+                                                                                                                                    <i class="bi bi-x-circle">
+                                                                                                                                    </i>
+                                                                                                                                    Out of Stock</span>
+                                                                                                                                </div>
+                                                                                                                            {% endif %}
+                                                             {% if product.stock > 0 %}
+                                                                 <form method="post" action="{% url 'cart:cart_add' %}">
+                                                                     {% csrf_token %}
+                                                                     <input type="hidden" name="product_id" value="{{ product.pk }}">
+                                                                     <input type="hidden" name="quantity" value="1">
+                                                                     <button type="submit" class="btn btn-primary btn-sm w-100 mt-2">
+                                                                         <i class="bi bi-cart-plus me-1"></i>
+                                                                         Add to Cart
+                                                                     </button>
+                                                                 </form>
+                                                             {% else %}
+                                                                 <button class="btn btn-primary btn-sm w-100 mt-2" disabled>
+                                                                     <i class="bi bi-cart-plus me-1"></i>
+                                                                     Sold Out
+                                                                 </button>
+                                                             {% endif %}
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        {% endfor %}
+                                                                                                    </div>
+                                                                                                    {# Pagination #}
+                                                                                                    {% if page_obj.paginator.num_pages > 1 %}
+                                                                                                        <nav class="mt-5" aria-label="Product pagination">
+                                                                                                            <ul class="pagination justify-content-center">
+                                                                                                                 {% if page_obj.has_previous %}
+                                                                                                                     <li class="page-item">
+                                                                                                                          <a class="page-link" href="{{ base_url }}?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if min_price %}&min_price={{ min_price }}{% endif %}{% if max_price %}&max_price={{ max_price }}{% endif %}{% if sort != 'newest' %}&sort={{ sort }}{% endif %}">
+                                                                                                                              Previous</a>
+                                                                                                                         </li>
+                                                                                                                     {% else %}
+                                                                                                                     <li class="page-item disabled">
+                                                                                                                         <span class="page-link">
+                                                                                                                             Previous</span>
+                                                                                                                         </li>
+                                                                                                                     {% endif %}
+                                                                                                                     {% for num in page_obj.paginator.page_range %}
+                                                                                                                         {% if num == page_obj.number %}
+                                                                                                                             <li class="page-item active">
+                                                                                                                                 <span class="page-link">
+                                                                                                                                     {{ num }}
+                                                                                                                                 </span>
+                                                                                                                             </li>
+                                                                                                                          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                                                                                                             <li class="page-item">
+                                                                                                                                  <a class="page-link" href="{{ base_url }}?page={{ num }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if min_price %}&min_price={{ min_price }}{% endif %}{% if max_price %}&max_price={{ max_price }}{% endif %}{% if sort != 'newest' %}&sort={{ sort }}{% endif %}">
+                                                                                                                                     {{ num }}
+                                                                                                                                 </a>
+                                                                                                                             </li>
+                                                                                                                         {% endif %}
+                                                                                                                     {% endfor %}
+                                                                                                                     {% if page_obj.has_next %}
+                                                                                                                         <li class="page-item">
+                                                                                                                              <a class="page-link" href="{{ base_url }}?page={{ page_obj.next_page_number }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if min_price %}&min_price={{ min_price }}{% endif %}{% if max_price %}&max_price={{ max_price }}{% endif %}{% if sort != 'newest' %}&sort={{ sort }}{% endif %}">
+                                                                                                                                  Next</a>
+                                                                                                                             </li>
+                                                                                                                        {% else %}
+                                                                                                                        <li class="page-item disabled">
+                                                                                                                            <span class="page-link">
+                                                                                                                                Next</span>
+                                                                                                                            </li>
+                                                                                                                        {% endif %}
+                                                                                                                    </ul>
+                                                                                                                </nav>
+                                                                                                            {% endif %}
+                                                                                                        {% else %}
+                                                                                                        <div class="text-center py-5">
+                                                                                                            <i class="bi bi-search" style="font-size: 3.5rem; color: var(--secondary);">
+                                                                                                            </i>
+                                                                                                            <h4 class="fw-bold mt-3">
+                                                                                                                No products found</h4>
+                                                                                                                {% if query %}
+                                                                                                                    <p class="text-secondary mb-1">
+                                                                                                                        No results for "
+                                                                                                                        <strong>
+                                                                                                                            {{ query }}
+                                                                                                                        </strong>"</p>
+                                                                                                                    {% endif %}
+                                                                                                                    <p class="text-secondary">
+                                                                                                                        Try a different search term or adjust your filters.</p>
+                                                                                                                        <div class="d-flex justify-content-center gap-2 mt-3 mb-4 flex-wrap">
+                                                                                                                            {% if query %}
+                                                                                                                                <a href="{% url 'store:product_list' %}
+                                                                                                                                    {% if category_slug %}
+                                                                                                                                        ?category={{ category_slug }}
+                                                                                                                                    {% endif %}
+                                                                                                                                    {% if min_price %}
+                                                                                                                                        {% if category_slug %}
+                                                                                                                                            &
+                                                                                                                                        {% else %}
+                                                                                                                                        ?
+                                                                                                                                    {% endif %}
+                                                                                                                                    min_price={{ min_price }}
+                                                                                                                                {% endif %}
+                                                                                                                                {% if max_price %}
+                                                                                                                                    {% if category_slug or min_price %}
+                                                                                                                                        &
+                                                                                                                                    {% else %}
+                                                                                                                                    ?
+                                                                                                                                {% endif %}
+                                                                                                                                max_price={{ max_price }}
+                                                                                                                            {% endif %}" class="btn btn-outline-primary btn-sm">
+                                                                                                                            <i class="bi bi-x me-1">
+                                                                                                                            </i>
+                                                                                                                            Clear search                        </a>
+                                                                                                                        {% endif %}
+                                                                                                                        {% if category_slug %}
+                                                                                                                            <a href="{% url 'store:product_list' %}
+                                                                                                                                {% if query %}
+                                                                                                                                    ?q={{ query }}
+                                                                                                                                {% endif %}
+                                                                                                                                {% if min_price %}
+                                                                                                                                    {% if query %}
+                                                                                                                                        &
+                                                                                                                                    {% else %}
+                                                                                                                                    ?
+                                                                                                                                {% endif %}
+                                                                                                                                min_price={{ min_price }}
+                                                                                                                            {% endif %}
+                                                                                                                            {% if max_price %}
+                                                                                                                                {% if query or min_price %}
+                                                                                                                                    &
+                                                                                                                                {% else %}
+                                                                                                                                ?
+                                                                                                                            {% endif %}
+                                                                                                                            max_price={{ max_price }}
+                                                                                                                        {% endif %}" class="btn btn-outline-primary btn-sm">
+                                                                                                                        <i class="bi bi-x me-1">
+                                                                                                                        </i>
+                                                                                                                        Clear category                        </a>
+                                                                                                                    {% endif %}
+                                                                                                                    <a href="{% url 'store:product_list' %}" class="btn btn-primary btn-sm">
+                                                                                                                        <i class="bi bi-arrow-counterclockwise me-1">
+                                                                                                                        </i>
+                                                                                                                        Clear all filters                        </a>
+                                                                                                                    </div>
+                                                                                                                    {% if categories %}
+                                                                                                                        <hr class="my-4" style="max-width: 300px; margin-inline: auto;">
+                                                                                                                            <p class="fw-semibold mb-3">
+                                                                                                                                Browse categories instead</p>
+                                                                                                                                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                                                                                                                    {% for cat in categories|slice:":6" %}
+                                                                                                                                        <a href="{% url 'store:product_list' %}
+                                                                                                                                            ?category={{ cat.slug }}"                           class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                                                                                                                                            {{ cat.name }}
+                                                                                                                                        </a>
+                                                                                                                                    {% endfor %}
+                                                                                                                                </div>
+                                                                                                                            {% endif %}
+                                                                                                                        </div>
+                                                                                                                    {% endif %}
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </section>
+                                                                                                    {% endblock %}

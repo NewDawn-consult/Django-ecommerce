@@ -1,0 +1,174 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+    Products — Admin — ShopExpress
+{% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">
+                Products</h4>
+                <p class="text-secondary small mb-0">
+                    {{ products|length }}
+                    product{{ products|length|pluralize }}
+                </p>
+            </div>
+            {% if can.add_product %}
+                <a href="{% url 'admin_panel:product_create' %}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-lg me-1"></i> Add Product
+                </a>
+            {% endif %}
+        </div>
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-body py-3">
+                <form method="get" class="row g-2 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-semibold text-secondary mb-1">Search</label>
+                        <input type="text" name="q" class="form-control form-control-sm" placeholder="Search products..." value="{{ q }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-semibold text-secondary mb-1">Category</label>
+                        <select name="category" class="form-select form-select-sm">
+                            <option value="">All</option>
+                            {% for c in categories %}
+                                <option value="{{ c.pk }}" {% if selected_category == c.pk|stringformat:'s' %}selected{% endif %}>{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-semibold text-secondary mb-1">Stock</label>
+                        <select name="stock" class="form-select form-select-sm">
+                            <option value="">All</option>
+                            <option value="in" {% if selected_stock == 'in' %}selected{% endif %}>In Stock</option>
+                            <option value="low" {% if selected_stock == 'low' %}selected{% endif %}>Low Stock</option>
+                            <option value="out" {% if selected_stock == 'out' %}selected{% endif %}>Out of Stock</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small fw-semibold text-secondary mb-1">Featured</label>
+                        <select name="featured" class="form-select form-select-sm">
+                            <option value="">All</option>
+                            <option value="yes" {% if selected_featured == 'yes' %}selected{% endif %}>Featured</option>
+                            <option value="no" {% if selected_featured == 'no' %}selected{% endif %}>Not Featured</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex gap-1">
+                        <button type="submit" class="btn btn-primary btn-sm flex-grow-1">
+                            <i class="bi bi-search me-1"></i> Filter
+                        </button>
+                        {% if q or selected_category or selected_stock or selected_featured %}
+                            <a href="{% url 'admin_panel:product_list' %}" class="btn btn-outline-secondary btn-sm flex-grow-1">
+                                <i class="bi bi-x-lg"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% if out_of_stock %}
+        <div class="alert alert-warning d-flex align-items-center gap-3 rounded-3 border-0 shadow-sm mb-4">
+            <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+            <div>
+                <strong class="d-block">{{ out_of_stock|length }} product{{ out_of_stock|length|pluralize }} out of stock.</strong>
+                <span class="small">Please restock to avoid missing sales.</span>
+            </div>
+            <a href="#out-of-stock-section" class="btn btn-outline-warning btn-sm ms-auto">
+                <i class="bi bi-arrow-down me-1"></i>View
+            </a>
+        </div>
+    {% endif %}
+    <div class="card shadow-sm border-0 rounded-3" id="out-of-stock-section">
+            <div class="table-responsive">
+                <table class="table admin-table mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">
+                            </th>
+                            <th style="width: 500px; padding-right: 24px;">
+                                Name</th>
+                                <th>
+                                    Category</th>
+                                    <th>
+                                        Price</th>
+                                        <th>
+                                            Stock</th>
+                                                    <th>
+                                                        Featured</th>
+                                                        <th>
+                                                            Created</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for product in products %}
+                                                    <tr>
+                                                        <td>
+                                                            {% if product.image %}
+                                                                <img src="{{ product.image.url }}" alt="" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px;">
+                                                                {% else %}
+                                                                <div class="bg-light rounded" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                                                    <i class="bi bi-box-seam text-secondary">
+                                                                    </i>
+                                                                </div>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td class="fw-semibold small" style="padding-right: 24px;">
+                                                            {{ product.name }}
+                                                        </td>
+                                                        <td class="small text-secondary">
+                                                            {{ product.category.name }}
+                                                        </td>
+                                                        <td>
+                                                            GHs{{product.price|intcomma}}
+                                                        </td>
+                                                        <td>
+                                                                {% if product.stock == 0 %}
+                                                                <span class="badge bg-danger">
+                                                                    Out of Stock</span>
+                                                                {% elif product.stock < 5 %}
+                                                                    <span class="badge bg-warning text-dark">
+                                                                        {{ product.stock }}
+                                                                    </span>
+                                                                {% else %}
+                                                                <span class="badge bg-success">
+                                                                    {{ product.stock }}
+                                                                </span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if product.featured %}
+                                                                <i class="bi bi-star-fill text-warning">
+                                                                </i>
+                                                            {% else %}
+                                                            <span class="text-secondary">
+                                                                —</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td class="small text-secondary">
+                                                            {{ product.created_at|date:"M d, Y" }}
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex gap-1">
+                                                                <a href="{% url 'admin_panel:product_update' product.pk %}" class="btn btn-sm btn-outline-primary" title="Edit">
+                                                                    <i class="bi bi-pencil"></i>
+                                                                </a>
+                                                                {% if can.delete_product %}
+                                                                    <a href="{% url 'admin_panel:product_delete' product.pk %}" class="btn btn-sm btn-outline-danger" title="Delete">
+                                                                        <i class="bi bi-trash"></i>
+                                                                    </a>
+                                                                {% endif %}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                {% empty %}
+                                                <tr>
+                                                    <td colspan="8" class="text-center text-secondary py-4">
+                                                        No products yet</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {% endblock %}

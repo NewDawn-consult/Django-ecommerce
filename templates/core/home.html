@@ -1,0 +1,549 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+    ShopExpress — Your Trusted Online Store
+{% endblock %}
+{% block extra_head %}
+<style>
+    .fade-in-up {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in-up.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+{% endblock %}
+{% block content %}
+    {# ─── Hero Carousel ─── #}
+    <section class="hero-carousel-section">
+        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                {% for product in featured_products %}
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+                        {% if forloop.first %}
+                            class="active"
+                        {% endif %}
+                        aria-label="Slide {{ forloop.counter }}">
+                    </button>
+                {% empty %}
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-label="Slide 1">
+                </button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2">
+                </button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3">
+                </button>
+            {% endfor %}
+        </div>
+        <div class="carousel-inner">
+            {% for product in featured_products %}
+                <div class="carousel-item
+                    {% if forloop.first %}
+                        active
+                    {% endif %}">
+                    <div class="hero-slide">
+                        <div class="container h-100">
+                            <div class="row align-items-center h-100">
+                                <div class="col-lg-6 text-white">
+                                    <span class="badge bg-warning text-dark mb-3 px-3 py-2 fs-6">
+                                        {% if product.category %}
+                                            {{ product.category.name }}
+                                        {% else %}
+                                        Featured
+                                    {% endif %}
+                                </span>
+                                <h1 class="hero-title mb-3">
+                                    {{ product.name|truncatewords:11 }}
+                                </h1>
+                                <p class="hero-subtitle mb-3">
+                                    {{ product.description|truncatewords:25 }}
+                                </p>
+                                <div class="d-flex align-items-center gap-3 mb-4">
+                                    <span class="hero-price">
+                                        GHs{{product.price|intcomma}}
+                                    </span>
+                                    {% if product.stock > 0 %}
+                                        <span class="badge bg-success bg-opacity-75 px-3 py-2">
+                                            In Stock</span>
+                                        {% else %}
+                                        <span class="badge bg-danger bg-opacity-75 px-3 py-2">
+                                            Out of Stock</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <a href="{{ product.get_absolute_url }}" class="btn btn-light btn-lg px-5 fw-semibold rounded-pill shadow-sm">
+                                            <i class="bi bi-eye me-2">
+                                            </i>
+                                            View Details                                    </a>
+                                            <a href="{% url 'store:product_list' %}" class="btn btn-outline-light btn-lg px-5 rounded-pill">
+                                                Shop All                                    </a>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 text-center d-none d-lg-flex justify-content-center align-items-center">
+                                            {% if product.image %}
+                                                <div class="hero-product-image">
+                                                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                                    </div>
+                                                {% else %}
+                                                <div class="hero-product-icon">
+                                                    <i class="bi bi-box-seam">
+                                                    </i>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                    {% for slide in "123" %}
+                        <div class="carousel-item
+                            {% if forloop.first %}
+                                active
+                            {% endif %}">
+                            <div class="hero-slide">
+                                <div class="container h-100">
+                                    <div class="row align-items-center h-100">
+                                        <div class="col-lg-6 text-white">
+                                            <span class="badge bg-warning text-dark mb-3 px-3 py-2 fs-6">
+                                                🔥 Featured Collection</span>
+                                                <h1 class="hero-title mb-3">
+                                                    {% if forloop.first %}
+                                                        Discover the Latest Trends
+                                                    {% elif forloop.counter == 2 %}
+                                                    Premium Quality Products
+                                                {% else %}
+                                                Shop the Best Deals
+                                            {% endif %}
+                                        </h1>
+                                        <p class="hero-subtitle mb-4">
+                                            {% if forloop.first %}
+                                                Shop the best deals on electronics, fashion, home goods, and more. Free shipping on orders over GHs500.
+                                            {% elif forloop.counter == 2 %}
+                                            Curated just for you — find exactly what you need with our hand-picked selection of top-rated items.
+                                        {% else %}
+                                        Amazing discounts on your favorite brands. Limited time offers you won't want to miss!
+                                    {% endif %}
+                                </p>
+                                <div class="d-flex flex-wrap gap-3">
+                                    <a href="{% url 'store:product_list' %}" class="btn btn-light btn-lg px-5 fw-semibold rounded-pill shadow-sm">
+                                        Shop Now</a>
+                                        <a href="{% url 'core:about' %}" class="btn btn-outline-light btn-lg px-5 rounded-pill">
+                                            Learn More</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 text-center d-none d-lg-block">
+                                        <div class="hero-product-icon">
+                                            <i class="bi
+                                                {% if forloop.first %}
+                                                    bi-bag-check-fill
+                                                {% elif forloop.counter == 2 %}
+                                                bi-star-fill
+                                            {% else %}
+                                            bi-lightning-fill
+                                        {% endif %}">
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+<button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true">
+    </span>
+    <span class="visually-hidden">
+        Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true">
+        </span>
+        <span class="visually-hidden">
+            Next</span>
+        </button>
+    </div>
+</section>
+{# ─── Featured Categories ─── #}
+<section class="container my-5 pt-4">
+    <div class="text-center mb-5">
+        <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2">
+            Categories</span>
+            <h2 class="fw-bold display-6 mb-2">
+                Shop by Category</h2>
+                <p class="text-secondary fs-5">
+                    Browse our curated categories to find exactly what you need.</p>
+                </div>
+                <div class="row g-4" id="categoriesRow">
+                    {% for category in categories %}
+                        <div class="col-6 col-md-4 col-lg-2 fade-in-up" style="transition-delay: {{ forloop.counter0|add:'0' }}00ms">
+                            <a href="{% url 'store:product_list' %}?category={{ category.slug }}" class="text-decoration-none">
+                                <div class="category-card">
+                                    <div class="icon-wrap">
+                                        <i class="{{ category.icon }}">
+                                        </i>
+                                    </div>
+                                    <h6 class="fw-semibold mb-1">
+                                        {{ category.name }}
+                                    </h6>
+                                    <small class="text-secondary">
+                                        {{ category.product_count }}
+                                        item{{ category.product_count|pluralize }}
+                                    </small>
+                                </div>
+                            </a>
+                        </div>
+                    {% empty %}
+                    <div class="col-12 text-center py-5">
+                        <p class="text-secondary">
+                            No categories available yet.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {# ─── Featured Products ─── #}
+            <section class="bg-white py-5">
+                <div class="container">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-5">
+                        <div>
+                            <span class="badge bg-warning bg-opacity-10 text-warning mb-2 px-3 py-2">
+                                Featured</span>
+                                <h2 class="fw-bold display-6 mb-1">
+                                    Featured Products</h2>
+                                    <p class="text-secondary fs-5 mb-0">
+                                        Hand-picked just for you</p>
+                                    </div>
+                                    <a href="{% url 'store:product_list' %}" class="btn btn-outline-primary rounded-pill px-4 mt-3 mt-md-0">
+                                        View All →</a>
+                                    </div>
+                                    <div class="row g-4">
+                                        {% for product in featured_products %}
+                                            <div class="col-6 col-md-4 col-lg-3 fade-in-up" style="transition-delay: {{ forloop.counter0|add:'0' }}00ms">
+                                                <div class="product-card" data-href="{{ product.get_absolute_url }}">
+                                                     <div class="product-img">
+                                                         {% if product.image %}
+                                                             <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 100%;">
+                                                             {% else %}
+                                                             <i class="bi bi-box-seam">
+                                                             </i>
+                                                         {% endif %}
+                                                         <button class="wishlist-btn" data-product-id="{{ product.pk }}">
+                                                             <i class="bi bi-heart">
+                                                             </i>
+                                                         </button>
+                                                     </div>
+                                                     <div class="card-body">
+                                                          <a href="{{ product.get_absolute_url }}" class="product-title">
+                                                              {{ product.name|truncatewords:11 }}</a>
+                                                         <div class="product-rating mb-1">
+                                                             {% with ''|center:4 as range %}
+                                                                {% for _ in range %}
+                                                                    <i class="bi bi-star-fill">
+                                                                    </i>
+                                                                {% endfor %}
+                                                            {% endwith %}
+                                                            <i class="bi bi-star">
+                                                            </i>
+                                                            <span class="text-secondary ms-1">
+                                                                ({{ product.reviews.count }}
+                                                                )</span>
+                                                            </div>
+                                                            <div class="product-price">
+                                                                GHs{{product.price|intcomma}}
+                                                            </div>
+                                                            <a href="{{ product.get_absolute_url }}" class="btn btn-primary btn-sm w-100 mt-2">
+                                                                <i class="bi bi-eye me-1">
+                                                                </i>
+                                                                View Details                        </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% empty %}
+                                                <div class="col-12 text-center py-5">
+                                                    <p class="text-secondary">
+                                                        No featured products available yet.</p>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </section>
+                                    {# ─── Latest Products ─── #}
+                                    <section class="container my-5 pt-3">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-5">
+                                            <div>
+                                                <span class="badge bg-info bg-opacity-10 text-info mb-2 px-3 py-2">
+                                                    New Arrivals</span>
+                                                    <h2 class="fw-bold display-6 mb-1">
+                                                        Latest Products</h2>
+                                                        <p class="text-secondary fs-5 mb-0">
+                                                            Fresh off the shelf</p>
+                                                        </div>
+                                                        <a href="{% url 'store:product_list' %}?sort=newest" class="btn btn-outline-primary rounded-pill px-4 mt-3 mt-md-0">
+                                                            View All →</a>
+                                                        </div>
+                                                         <div class="row g-4">
+                                                             {% for product in latest_products %}
+                                                                 <div class="col-6 col-md-4 col-lg-3 fade-in-up" style="transition-delay: {{ forloop.counter0|add:'0' }}00ms">
+                                                                     <div class="product-card" data-href="{{ product.get_absolute_url }}">
+                                                                         <div class="product-img">
+                                                                             {% if product.image %}
+<img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 100%;">
+                                                                             {% else %}
+                                                                             <i class="bi bi-box-seam">
+                                                                             </i>
+                                                                         {% endif %}
+                                                                         <span class="badge bg-success badge-float">
+                                                                             New</span>
+                                                                                 <button class="wishlist-btn" data-product-id="{{ product.pk }}">
+                                                                                    <i class="bi bi-heart">
+                                                                                    </i>
+                                                                                </button>
+                                                                            </div>
+                                                                             <div class="card-body">
+                                                                                 <a href="{{ product.get_absolute_url }}" class="product-title">
+                                                                                     {{ product.name|truncatewords:11 }}
+                                                                                </a>
+                                                                                <div class="product-rating mb-1">
+                                                                                    {% with ''|center:4 as range %}
+                                                                                        {% for _ in range %}
+                                                                                            <i class="bi bi-star-fill">
+                                                                                            </i>
+                                                                                        {% endfor %}
+                                                                                    {% endwith %}
+                                                                                    <i class="bi bi-star">
+                                                                                    </i>
+                                                                                </div>
+                                                                                <div class="product-price">
+                                                                                    GHs{{product.price|intcomma}}
+                                                                                </div>
+                                                                                <a href="{{ product.get_absolute_url }}" class="btn btn-outline-primary btn-sm w-100 mt-2">
+                                                                                    <i class="bi bi-eye me-1">
+                                                                                    </i>
+                                                                                    View Details                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    {% empty %}
+                                                                    <div class="col-12 text-center py-5">
+                                                                        <p class="text-secondary">
+                                                                            No products available yet.</p>
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                        </div>
+                                                                    </section>
+                                                                    {# ─── Features Strip ─── #}
+                                                                    <section class="bg-white py-4">
+                                                                        <div class="container">
+                                                                            <div class="row g-3">
+                                                                                <div class="col-md-4">
+                                                                                    <div class="d-flex align-items-center gap-3 bg-light bg-opacity-50 p-4 rounded-4">
+                                                                                        <div class="fs-1 text-primary">
+                                                                                            <i class="bi bi-truck">
+                                                                                            </i>
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <h6 class="fw-bold mb-1">
+                                                                                                Free Shipping</h6>
+                                                                                                <p class="text-secondary small mb-0">
+                                                                                                    On orders over GHs500</p>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-md-4">
+                                                                                            <div class="d-flex align-items-center gap-3 bg-light bg-opacity-50 p-4 rounded-4">
+                                                                                                <div class="fs-1 text-primary">
+                                                                                                    <i class="bi bi-arrow-repeat">
+                                                                                                    </i>
+                                                                                                </div>
+                                                                                                <div>
+                                                                                                    <h6 class="fw-bold mb-1">
+                                                                                                        Easy Returns</h6>
+                                                                                                        <p class="text-secondary small mb-0">
+                                                                                                            30-day return policy</p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="col-md-4">
+                                                                                                    <div class="d-flex align-items-center gap-3 bg-light bg-opacity-50 p-4 rounded-4">
+                                                                                                        <div class="fs-1 text-primary">
+                                                                                                            <i class="bi bi-shield-check">
+                                                                                                            </i>
+                                                                                                        </div>
+                                                                                                        <div>
+                                                                                                            <h6 class="fw-bold mb-1">
+                                                                                                                Secure Payment</h6>
+                                                                                                                <p class="text-secondary small mb-0">
+                                                                                                                    100% secure checkout</p>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </section>
+                                                                                            {# ─── Testimonials ─── #}
+                                                                                            <section class="container my-5 pt-4">
+                                                                                                <div class="text-center mb-5">
+                                                                                                    <span class="badge bg-success bg-opacity-10 text-success mb-3 px-3 py-2">
+                                                                                                        Testimonials</span>
+                                                                                                        <h2 class="fw-bold display-6 mb-2">
+                                                                                                            What Our Customers Say</h2>
+                                                                                                            <p class="text-secondary fs-5">
+                                                                                                                Join thousands of satisfied shoppers</p>
+                                                                                                            </div>
+                                                                                                            <div class="row g-4">
+                                                                                                                <div class="col-md-4">
+                                                                                                                    <div class="testimonial-card">
+                                                                                                                        <div class="stars mb-3">
+                                                                                                                            <i class="bi bi-star-fill">
+                                                                                                                            </i>
+                                                                                                                            <i class="bi bi-star-fill">
+                                                                                                                            </i>
+                                                                                                                            <i class="bi bi-star-fill">
+                                                                                                                            </i>
+                                                                                                                            <i class="bi bi-star-fill">
+                                                                                                                            </i>
+                                                                                                                            <i class="bi bi-star-fill">
+                                                                                                                            </i>
+                                                                                                                        </div>
+                                                                                                                        <p class="testimonial-text">"Absolutely love my purchase! The quality exceeded my expectations and shipping was incredibly fast. Will definitely be ordering again."</p>
+                                                                                                                            <div class="d-flex align-items-center gap-3 mt-3">
+                                                                                                                                <div class="testimonial-avatar">
+                                                                                                                                    <i class="bi bi-person-circle">
+                                                                                                                                    </i>
+                                                                                                                                </div>
+                                                                                                                                <div>
+                                                                                                                                    <h6 class="fw-bold mb-0">
+                                                                                                                                        Sarah M.</h6>
+                                                                                                                                        <small class="text-secondary">
+                                                                                                                                            Verified Buyer</small>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="col-md-4">
+                                                                                                                                <div class="testimonial-card">
+                                                                                                                                    <div class="stars mb-3">
+                                                                                                                                        <i class="bi bi-star-fill">
+                                                                                                                                        </i>
+                                                                                                                                        <i class="bi bi-star-fill">
+                                                                                                                                        </i>
+                                                                                                                                        <i class="bi bi-star-fill">
+                                                                                                                                        </i>
+                                                                                                                                        <i class="bi bi-star-fill">
+                                                                                                                                        </i>
+                                                                                                                                        <i class="bi bi-star-fill">
+                                                                                                                                        </i>
+                                                                                                                                    </div>
+                                                                                                                                    <p class="testimonial-text">"Best online shopping experience I've had. The customer service team went above and beyond to help me with my order. Five stars!"</p>
+                                                                                                                                        <div class="d-flex align-items-center gap-3 mt-3">
+                                                                                                                                            <div class="testimonial-avatar">
+                                                                                                                                                <i class="bi bi-person-circle">
+                                                                                                                                                </i>
+                                                                                                                                            </div>
+                                                                                                                                            <div>
+                                                                                                                                                <h6 class="fw-bold mb-0">
+                                                                                                                                                    James K.</h6>
+                                                                                                                                                    <small class="text-secondary">
+                                                                                                                                                        Verified Buyer</small>
+                                                                                                                                                    </div>
+                                                                                                                                                </div>
+                                                                                                                                            </div>
+                                                                                                                                        </div>
+                                                                                                                                        <div class="col-md-4">
+                                                                                                                                            <div class="testimonial-card">
+                                                                                                                                                <div class="stars mb-3">
+                                                                                                                                                    <i class="bi bi-star-fill">
+                                                                                                                                                    </i>
+                                                                                                                                                    <i class="bi bi-star-fill">
+                                                                                                                                                    </i>
+                                                                                                                                                    <i class="bi bi-star-fill">
+                                                                                                                                                    </i>
+                                                                                                                                                    <i class="bi bi-star-fill">
+                                                                                                                                                    </i>
+                                                                                                                                                    <i class="bi bi-star-half">
+                                                                                                                                                    </i>
+                                                                                                                                                </div>
+                                                                                                                                                <p class="testimonial-text">"Great selection of products at reasonable prices. The website is easy to navigate and checkout was a breeze. Highly recommended!"</p>
+                                                                                                                                                    <div class="d-flex align-items-center gap-3 mt-3">
+                                                                                                                                                        <div class="testimonial-avatar">
+                                                                                                                                                            <i class="bi bi-person-circle">
+                                                                                                                                                            </i>
+                                                                                                                                                        </div>
+                                                                                                                                                        <div>
+                                                                                                                                                            <h6 class="fw-bold mb-0">
+                                                                                                                                                                Emily R.</h6>
+                                                                                                                                                                <small class="text-secondary">
+                                                                                                                                                                    Verified Buyer</small>
+                                                                                                                                                                </div>
+                                                                                                                                                            </div>
+                                                                                                                                                        </div>
+                                                                                                                                                    </div>
+                                                                                                                                                </div>
+                                                                                                                                            </section>
+                                                                                                                                            {# ─── Call To Action ─── #}
+                                                                                                                                            <section class="cta-section text-white">
+                                                                                                                                                <div class="container text-center position-relative">
+                                                                                                                                                    <h2 class="fw-bold display-5 mb-3">
+                                                                                                                                                        Ready to Start Shopping?</h2>
+                                                                                                                                                        <p class="fs-5 mb-4 opacity-90 mx-auto" style="max-width: 600px;">
+                                                                                                                                                            Sign up today and get 10% off your first order. Join our community of happy customers.</p>
+                                                                                                                                                            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                                                                                                                                                                <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg px-5 fw-semibold rounded-pill">
+                                                                                                                                                                    <i class="bi bi-person-plus me-2">
+                                                                                                                                                                    </i>
+                                                                                                                                                                    Create Account            </a>
+                                                                                                                                                                    <a href="{% url 'store:product_list' %}" class="btn btn-outline-light btn-lg px-5 rounded-pill">
+                                                                                                                                                                        Browse Products            </a>
+                                                                                                                                                                    </div>
+                                                                                                                                                                </div>
+                                                                                                                                                            </section>
+                                                                                                                                                            {# ─── Newsletter ─── #}
+                                                                                                                                                            <section class="bg-white py-5">
+                                                                                                                                                                <div class="container">
+                                                                                                                                                                    <div class="row justify-content-center">
+                                                                                                                                                                        <div class="col-lg-6 text-center">
+                                                                                                                                                                            <i class="bi bi-envelope-paper-heart fs-1 text-primary mb-3 d-block">
+                                                                                                                                                                            </i>
+                                                                                                                                                                            <h3 class="fw-bold mb-2">
+                                                                                                                                                                                Stay in the Loop</h3>
+                                                                                                                                                                                <p class="text-secondary mb-4">
+                                                                                                                                                                                    Subscribe to our newsletter for exclusive deals, new arrivals, and 10% off your first order.</p>
+                                                    <form class="newsletter-form mx-auto" style="max-width: 480px;" action="{% url 'core:newsletter_subscribe' %}" method="post">
+                                                        {% csrf_token %}
+                                                        <div class="input-group input-group-lg">
+                                                            <input type="email" name="email" class="form-control border-end-0" placeholder="Enter your email address" aria-label="Email" required>
+                                                                <button class="btn btn-primary px-4 fw-semibold" type="submit">
+                                                                    Subscribe</button>
+                                                                </div>
+                                                                                                                                                                                                <div class="form-text text-start mt-2">
+                                                                                                                                                                                                    <i class="bi bi-shield-check me-1 text-success">
+                                                                                                                                                                                                    </i>
+                                                                                                                                                                                                    No spam. Unsubscribe anytime.                    </div>
+                                                                                                                                                                                                </form>
+                                                                                                                                                                                            </div>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                    </div>
+                                                                                                                 </section>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+    (function() {
+        var targets = document.querySelectorAll('.fade-in-up');
+        if (!targets.length) return;
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+        targets.forEach(function(el) { observer.observe(el); });
+    })();
+</script>
+{% endblock %}

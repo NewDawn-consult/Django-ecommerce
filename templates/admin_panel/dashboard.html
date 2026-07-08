@@ -1,0 +1,323 @@
+{% extends 'admin_panel/base_admin.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+    Dashboard — Admin — ShopExpress
+{% endblock %}
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">
+                Dashboard</h4>
+                <p class="text-secondary small mb-0">
+                    Overview of your store performance</p>
+                </div>
+                <span class="text-secondary small">
+                    {% now "l, F j, Y" %}
+                </span>
+            </div>
+            {# ─── Stat Cards ─── #}
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-xl-3">
+                    <div class="card stat-card shadow-sm">
+                        <div class="card-body d-flex align-items-center gap-3">
+                            <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                                <i class="bi bi-box-seam">
+                                </i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0">
+                                    {{ product_count }}
+                                </h5>
+                                <small class="text-secondary">
+                                    Products</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-xl-3">
+                        <div class="card stat-card shadow-sm">
+                            <div class="card-body d-flex align-items-center gap-3">
+                                <div class="stat-icon bg-success bg-opacity-10 text-success">
+                                    <i class="bi bi-receipt">
+                                    </i>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold mb-0">
+                                        {{ order_count }}
+                                    </h5>
+                                    <small class="text-secondary">
+                                        Orders</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-xl-3">
+                            <div class="card stat-card shadow-sm">
+                                <div class="card-body d-flex align-items-center gap-3">
+                                    <div class="stat-icon bg-info bg-opacity-10 text-info">
+                                        <i class="bi bi-people">
+                                        </i>
+                                    </div>
+                                    <div>
+                                        <h5 class="fw-bold mb-0">
+                                            {{ customer_count }}
+                                        </h5>
+                                        <small class="text-secondary">
+                                            Customers</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-xl-3">
+                                <div class="card stat-card shadow-sm">
+                                    <div class="card-body d-flex align-items-center gap-3">
+                                        <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                                            <i class="bi bi-currency-dollar">
+                                            </i>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold mb-0">
+                                                GHs{{revenue|floatformat:2|intcomma }}
+                                            </h5>
+                                            <small class="text-secondary">
+                                                Revenue</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if out_of_stock_count %}
+                                <div class="alert alert-warning d-flex align-items-center gap-3 rounded-3 border-0 shadow-sm mb-4">
+                                    <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+                                    <div>
+                                        <strong class="d-block">{{ out_of_stock_count }} product{{ out_of_stock_count|pluralize }} out of stock.</strong>
+                                        <span class="small">Please restock to avoid missing sales.</span>
+                                    </div>
+                                    <a href="{% url 'admin_panel:product_list' %}" class="btn btn-outline-warning btn-sm ms-auto">
+                                        <i class="bi bi-box-seam me-1"></i>View Products
+                                    </a>
+                                </div>
+                            {% endif %}
+                            {# ─── Charts Row ─── #}
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <div class="card shadow-sm border-0 rounded-3">
+                                        <div class="card-body">
+                                            <h6 class="fw-bold mb-3">
+                                                <i class="bi bi-pie-chart me-2">
+                                                </i>
+                                                Orders by Status</h6>
+                                                <canvas id="ordersChart" height="180">
+                                                </canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card shadow-sm border-0 rounded-3">
+                                            <div class="card-body">
+                                                <h6 class="fw-bold mb-3">
+                                                    <i class="bi bi-grid me-2">
+                                                    </i>
+                                                    Products by Category</h6>
+                                                    <canvas id="categoryChart" height="200">
+                                                    </canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {# ─── Tables Row ─── #}
+                                    <div class="row g-3">
+                                        <div class="col-lg-4">
+                                            <div class="card shadow-sm border-0 rounded-3 h-100">
+                                                <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center pt-3">
+                                                    <h6 class="fw-bold mb-0">
+                                                        <i class="bi bi-clock-history me-2">
+                                                        </i>
+                                                        Recent Orders</h6>
+                                                        <a href="{% url 'admin_panel:order_list' %}" class="small text-decoration-none">
+                                                            View All</a>
+                                                        </div>
+                                                        <div class="card-body p-0">
+                                                            <table class="table admin-table mb-0">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>
+                                                                            Order</th>
+                                                                            <th>
+                                                                                Customer</th>
+                                                                                <th>
+                                                                                    Status</th>
+                                                                                    <th>
+                                                                                        Total</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    {% for order in recent_orders %}
+                                                                                        <tr>
+                                                                                            <td class="fw-semibold">
+                                                                                                #{{ order.pk }}
+                                                                                            </td>
+                                                                                            <td class="small">
+                                                                                                {{ order.shipping_name|truncatechars:16 }}
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <span class="badge rounded-pill
+                                                                                                    {% if order.status == 'completed' %}
+                                                                                                        bg-success
+                                                                                                    {% elif order.status == 'cancelled' %}
+                                                                                                    bg-danger
+                                                                                                {% elif order.status == 'processing' %}
+                                                                                                bg-warning text-dark
+                                                                                            {% else %}
+                                                                                            bg-secondary
+                                                                                        {% endif %}
+                                                                                        fs-6">
+                                                                                        {{ order.get_status_display }}
+                                                                                    </span>
+                                                                                </td>
+                                                                                <td class="fw-semibold">
+                                                                                    GHs{{order.total|intcomma}}
+                                                                                </td>
+                                                                            </tr>
+                                                                        {% empty %}
+                                                                        <tr>
+                                                                            <td colspan="4" class="text-center text-secondary py-4">
+                                                                                No orders yet</td>
+                                                                            </tr>
+                                                                        {% endfor %}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <div class="card shadow-sm border-0 rounded-3 h-100">
+                                                            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center pt-3">
+                                                                <h6 class="fw-bold mb-0">
+                                                                    <i class="bi bi-box-seam me-2">
+                                                                    </i>
+                                                                    Recent Products</h6>
+                                                                    {% if can.add_product %}
+                                                                        <a href="{% url 'admin_panel:product_create' %}" class="btn btn-sm btn-primary">
+                                                                            <i class="bi bi-plus-lg"></i>
+                                                                        </a>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="card-body p-0">
+                                                                    <table class="table admin-table mb-0">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>
+                                                                                    Product</th>
+                                                                                    <th>
+                                                                                        Price</th>
+                                                                                        <th>
+                                                                                            Stock</th>
+                                                                                            <th>
+                                                                                            </th>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        {% for product in recent_products %}
+                                                                                            <tr>
+                                                                                                <td class="small fw-semibold">
+                                                                                                    {{ product.name|truncatechars:20 }}
+                                                                                                </td>
+                                                                                                <td class="small">
+                                                                                                    GHs{{product.price|intcomma}}
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    {% if product.stock == 0 %}
+                                                                                                        <span class="badge bg-danger">0</span>
+                                                                                                    {% elif product.stock < 5 %}
+                                                                                                        <span class="badge bg-warning text-dark">{{ product.stock }}</span>
+                                                                                                    {% else %}
+                                                                                                        <span class="badge bg-success">{{ product.stock }}</span>
+                                                                                                    {% endif %}
+                                                                                                </td>
+                                                                                                <td class="text-end">
+                                                                                                    <div class="d-flex gap-1 justify-content-end">
+                                                                                                        <a href="{% url 'admin_panel:product_update' product.pk %}" class="btn btn-sm btn-outline-primary py-0 px-1" title="Edit">
+                                                                                                            <i class="bi bi-pencil"></i>
+                                                                                                        </a>
+                                                                                                        {% if can.delete_product %}
+                                                                                                            <a href="{% url 'admin_panel:product_delete' product.pk %}" class="btn btn-sm btn-outline-danger py-0 px-1" title="Delete">
+                                                                                                                <i class="bi bi-trash"></i>
+                                                                                                            </a>
+                                                                                                        {% endif %}
+                                                                                                    </div>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        {% empty %}
+                                                                                        <tr>
+                                                                                            <td colspan="4" class="text-center text-secondary py-4">
+                                                                                                No products yet</td>
+                                                                                            </tr>
+                                                                                        {% endfor %}
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                            <div class="col-lg-4">
+                                                                                <div class="card shadow-sm border-0 rounded-3 h-100">
+                                                                                    <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center pt-3">
+                                                                                        <h6 class="fw-bold mb-0">
+                                                                                            <i class="bi bi-person-plus me-2">
+                                                                                            </i>
+                                                                                            Recent Customers</h6>
+                                                                                            <a href="{% url 'admin_panel:customer_list' %}" class="small text-decoration-none">
+                                                                                                View All</a>
+                                                                                            </div>
+                                                                                            <div class="card-body p-0">
+                                                                                                <table class="table admin-table mb-0">
+                                                                                                    <thead>
+                                                                                                        <tr>
+                                                                                                            <th>
+                                                                                                                Name</th>
+                                                                                                                <th>
+                                                                                                                    Email</th>
+                                                                                                                    <th>
+                                                                                                                        Joined</th>
+                                                                                                                    </tr>
+                                                                                                                </thead>
+                                                                                                                <tbody>
+                                                                                                                    {% for c in recent_customers %}
+                                                                                                                        <tr>
+                                                                                                                            <td class="small fw-semibold">
+                                                                                                                                {{ c.get_full_name|default:c.username|truncatechars:16 }}
+                                                                                                                            </td>
+                                                                                                                            <td class="small text-secondary">
+                                                                                                                                {{ c.email|truncatechars:20 }}
+                                                                                                                            </td>
+                                                                                                                            <td class="small text-secondary">
+                                                                                                                                {{ c.date_joined|date:"M d" }}
+                                                                                                                            </td>
+                                                                                                                        </tr>
+                                                                                                                    {% empty %}
+                                                                                                                    <tr>
+                                                                                                                        <td colspan="3" class="text-center text-secondary py-4">
+                                                                                                                            No customers yet</td>
+                                                                                                                        </tr>
+                                                                                                                    {% endfor %}
+                                                                                                                </tbody>
+                                                                                                            </table>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        {% endblock %}
+                                                                                        {% block extra_scripts %}
+                                                                                            <script>
+                                                                                                document.addEventListener('DOMContentLoaded', function () {    const statusLabels = [];    const statusCounts = [];    const statusColors = {        pending: '#6c757d',        processing: '#ffc107',        completed: '#198754',        cancelled: '#dc3545',    };
+                                                                                                 {% for item in orders_by_status %}
+                                                                                                     statusLabels.push('{{ item.status|title }}');    statusCounts.push({{ item.count }});
+                                                                                                 {% endfor %}
+                                                                                                if (statusLabels.length) {        new Chart(document.getElementById('ordersChart'), {            type: 'doughnut',            data: {                labels: statusLabels,                datasets: [{                    data: statusCounts,                    backgroundColor: statusLabels.map(function (l) {                        return statusColors[l.toLowerCase()] || '#6c757d';                    }),                    borderWidth: 0,                }]            },            options: {                responsive: true,                plugins: { legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true } } },                cutout: '65%',            }        });    }    const catLabels = [];    const catCounts = [];    const catColors = ['#0d6efd','#198754','#ffc107','#dc3545','#0dcaf0','#6f42c1','#fd7e14','#20c997'];
+                                                                                                 {% for item in products_by_category %}
+                                                                                                     catLabels.push('{{ item.name|escapejs }}');    catCounts.push({{ item.count }});
+                                                                                                 {% endfor %}
+                                                                                                if (catLabels.length) {        new Chart(document.getElementById('categoryChart'), {            type: 'pie',            data: {                labels: catLabels,                datasets: [{                    data: catCounts,                    backgroundColor: catLabels.map(function (_, i) { return catColors[i % catColors.length]; }),                    borderWidth: 0,                }]            },            options: {                responsive: true,                plugins: { legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true, font: { size: 11 } } } },            }        });    }}
+                                                                                                );</script>
+                                                                                            {% endblock %}

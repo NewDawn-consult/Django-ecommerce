@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+    My Wishlist — ShopExpress
+{% endblock %}
+{% block content %}
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                My Wishlist</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'core:home' %}">
+                                Home</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Wishlist</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+                <section class="container my-5">
+                    {% if wishlist_items %}
+                        <div class="row g-4">
+                            {% for item in wishlist_items %}
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <div class="product-card" data-href="{% url 'store:product_detail' slug=item.product.slug %}">
+                                         <div class="product-img">
+                                             {% if item.product.image %}
+                                                 <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 100%; height: 100%;">
+                                                {% else %}
+                                                <i class="bi bi-box-seam">
+                                                </i>
+                                            {% endif %}
+                                            <form method="post" action="{% url 'accounts:wishlist_toggle' %}" class="wishlist-form">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="product_id" value="{{ item.product.pk }}">
+                                                    <button type="submit" class="wishlist-btn bg-danger text-white">
+                                                        <i class="bi bi-heart-fill">
+                                                        </i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                            <div class="card-body">
+                                                <span class="small text-secondary text-uppercase" style="letter-spacing: 0.5px; font-size: 0.7rem;">
+                                                    {{ item.product.category.name }}
+                                                </span>
+                                                <a href="{% url 'store:product_detail' slug=item.product.slug %}" class="product-title">
+                                                    {{ item.product.name|truncatewords:11 }}
+                                                </a>
+                                                <div class="product-price mb-2">
+                                                    GHs{{item.product.price|intcomma}}
+                                                </div>
+                                                {% if item.product.stock > 0 %}
+                                                    <form method="post" action="{% url 'cart:cart_add' %}">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="product_id" value="{{ item.product.pk }}">
+                                                            <input type="hidden" name="quantity" value="1">
+                                                                <button type="submit" class="btn btn-primary btn-sm w-100">
+                                                                    <i class="bi bi-cart-plus me-1">
+                                                                    </i>
+                                                                    Add to Cart                            </button>
+                                                                </form>
+                                                            {% else %}
+                                                            <button class="btn btn-secondary btn-sm w-100" disabled>
+                                                                Out of Stock</button>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                    <div class="text-center py-5">
+                                        <i class="bi bi-heart" style="font-size: 4rem; color: var(--secondary);">
+                                        </i>
+                                        <h4 class="fw-bold mt-3">
+                                            Your wishlist is empty</h4>
+                                            <p class="text-secondary">
+                                                Save your favorite items here.</p>
+                                                <a href="{% url 'store:product_list' %}" class="btn btn-primary px-4">
+                                                    <i class="bi bi-shop me-2">
+                                                    </i>
+                                                    Browse Products            </a>
+                                                </div>
+                                            {% endif %}
+                                        </section>
+                                    {% endblock %}

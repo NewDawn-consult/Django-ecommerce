@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+    Order Confirmed — ShopExpress
+{% endblock %}
+{% block content %}
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                Order Confirmed</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'core:home' %}">
+                                Home</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'orders:order_list' %}">
+                                    Orders</a>
+                                </li>
+                                <li class="breadcrumb-item active">
+                                    Confirmed</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="container my-5">
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;">
+                                </i>
+                            </div>
+                            <h2 class="fw-bold">
+                                Thank You, {{ order.shipping_name }}
+                                !</h2>
+                                <p class="text-secondary fs-5">
+                                    Your order has been placed successfully.</p>
+                                    <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
+                                        <span class="badge bg-light text-dark border px-4 py-2 fs-6">
+                                            <strong>
+                                                Order #</strong>
+                                                {{ order.pk }}
+                                            </span>
+                                            <span class="badge bg-light text-dark border px-4 py-2 fs-6">
+                                                <strong>
+                                                    Total</strong>
+                                                    GHs{{order.total|floatformat:2|intcomma }}
+                                                </span>
+                                                <span class="badge bg-light text-dark border px-4 py-2 fs-6">
+                                                    <strong>
+                                                        Status</strong>
+                                                        <span class="badge rounded-pill bg-secondary ms-1">
+                                                            {{ order.get_status_display }}
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="row g-4 mt-2">
+                                                <div class="col-lg-6">
+                                                    <div class="card shadow-sm border-0 rounded-3 h-100">
+                                                        <div class="card-body">
+                                                            <h5 class="fw-bold mb-3">
+                                                                <i class="bi bi-truck me-2">
+                                                                </i>
+                                                                Shipping To</h5>
+                                                                <p class="mb-1 fw-semibold">
+                                                                    {{ order.shipping_name }}
+                                                                </p>
+                                                                <p class="mb-1 text-secondary">
+                                                                    {{ order.address }}
+                                                                </p>
+                                                                <p class="mb-1 text-secondary">
+                                                                    {{ order.city }}
+                                                                    , {{ order.region }}
+                                                                </p>
+                                                                <p class="mb-1 text-secondary">
+                                                                    {{ order.phone }}
+                                                                </p>
+                                                                <p class="mb-0 text-secondary">
+                                                                    {{ order.email }}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="card shadow-sm border-0 rounded-3 h-100">
+                                                            <div class="card-body">
+                                                                <h5 class="fw-bold mb-3">
+                                                                    <i class="bi bi-box me-2">
+                                                                    </i>
+                                                                    Order Items</h5>
+                                                                    {% for item in order.items.all %}
+                                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                            <span>
+                                                                                {{ item.product_name }}
+                                                                                <small class="text-secondary">
+                                                                                    x{{ item.quantity }}
+                                                                                </small>
+                                                                            </span>
+                                                                            <span class="fw-semibold">
+                                                                                GHs{{item.total_price|intcomma}}
+                                                                            </span>
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                    <hr>
+                                                                        <div class="d-flex justify-content-between">
+                                                                            <span>
+                                                                                Subtotal</span>
+                                                                                <span>
+                                                                                    GHs{{order.subtotal|intcomma}}
+                                                                                </span>
+                                                                            </div>
+                                                                            <div class="d-flex justify-content-between">
+                                                                                <span>
+                                                                                    Shipping</span>
+                                                                                    <span class="text-success">
+                                                                                        Free</span>
+                                                                                    </div>
+                                                                                    <div class="d-flex justify-content-between">
+                                                                                        <span>
+                                                                                            Tax</span>
+                                                                                            <span>
+                                                                                                GHs{{order.tax|floatformat:2|intcomma }}
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <hr>
+                                                                                            <div class="d-flex justify-content-between fw-bold fs-5">
+                                                                                                <span>
+                                                                                                    Total</span>
+                                                                                                    <span>
+                                                                                                        GHs{{order.total|floatformat:2|intcomma }}
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="text-center mt-4">
+                                                                                    <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-primary btn-lg">
+                                                                                        <i class="bi bi-eye me-2">
+                                                                                        </i>
+                                                                                        View Order Details        </a>
+                                                                                        <a href="{% url 'orders:order_invoice' order.pk %}" class="btn btn-outline-primary btn-lg" target="_blank">
+                                                                                            <i class="bi bi-receipt me-2">
+                                                                                            </i>
+                                                                                            View Invoice        </a>
+                                                                                            <a href="{% url 'store:product_list' %}" class="btn btn-outline-primary btn-lg ms-2">
+                                                                                                <i class="bi bi-shop me-2">
+                                                                                                </i>
+                                                                                                Continue Shopping        </a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    {% endblock %}

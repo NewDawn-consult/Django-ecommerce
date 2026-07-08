@@ -1,0 +1,512 @@
+{% load static crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login — ShopExpress</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+            background: #0f0f1a;
+        }
+
+        .bg-image {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: url('https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=1920&q=80') center/cover no-repeat;
+        }
+
+        .bg-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+        }
+
+        .login-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(24px);
+            border-radius: 24px;
+            padding: 2.75rem 2rem 2rem;
+            box-shadow:
+                0 32px 80px rgba(0, 0, 0, 0.45),
+                0 0 0 1px rgba(255, 255, 255, 0.06);
+            animation: cardIn 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0d6efd, #583cfa, #0d6efd);
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .brand .logo-ring {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 1.25rem;
+            background: linear-gradient(135deg, #0d6efd, #583cfa);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 32px rgba(13, 110, 253, 0.3);
+            position: relative;
+        }
+
+        .brand .logo-ring::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 23px;
+            background: linear-gradient(135deg, rgba(13,110,253,0.3), rgba(88,60,250,0.3));
+            z-index: -1;
+            animation: pulseRing 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseRing {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .brand .logo-ring i {
+            font-size: 1.85rem;
+            color: #fff;
+        }
+
+        .brand h4 {
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 0.35rem;
+            letter-spacing: -0.3px;
+        }
+
+        .brand p {
+            color: #6c757d;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        /* ── Crispy Form Styles ── */
+        #div_id_username,
+        #div_id_password {
+            margin-bottom: 1.1rem;
+        }
+
+        #div_id_username .form-label,
+        #div_id_password .form-label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #495057;
+            margin-bottom: 0.35rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        #div_id_username .form-label::before {
+            content: '\F4E0';
+            font-family: 'bootstrap-icons';
+            font-size: 0.85rem;
+            color: #0d6efd;
+        }
+
+        #div_id_password .form-label::before {
+            content: '\F1F0';
+            font-family: 'bootstrap-icons';
+            font-size: 0.85rem;
+            color: #0d6efd;
+        }
+
+        #div_id_username .form-control,
+        #div_id_password .form-control {
+            height: 50px;
+            border-radius: 12px;
+            border: 1.5px solid #e4e4ec;
+            background: #f8f9fc;
+            padding: 0.7rem 1rem;
+            font-size: 0.9rem;
+            transition: all 0.25s ease;
+        }
+
+        #div_id_username .form-control:focus,
+        #div_id_password .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+            background: #fff;
+        }
+
+        #div_id_username .form-control.is-invalid,
+        #div_id_password .form-control.is-invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.08);
+        }
+
+        #div_id_username .form-control::placeholder,
+        #div_id_password .form-control::placeholder {
+            color: #adb5bd;
+            font-weight: 400;
+        }
+
+        /* Error styling */
+        #div_id_username .errorlist,
+        #div_id_password .errorlist {
+            list-style: none;
+            padding: 0;
+            margin: 0.3rem 0 0;
+            font-size: 0.78rem;
+            color: #dc3545;
+        }
+
+        #div_id_username .invalid-feedback,
+        #div_id_password .invalid-feedback {
+            font-size: 0.78rem;
+        }
+
+        /* Hide crispy asterisk */
+        .asteriskField { display: none; }
+
+        /* Password wrapper for toggle */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper .form-control {
+            padding-right: 2.8rem !important;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #8b8ba7;
+            cursor: pointer;
+            padding: 6px;
+            z-index: 5;
+            font-size: 1.15rem;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .password-toggle:hover {
+            color: #0d6efd;
+        }
+
+        /* Remember me checkbox */
+        .form-check {
+            margin-bottom: 1.25rem;
+            padding-left: 1.8rem;
+        }
+
+        .form-check-input {
+            width: 1.1rem;
+            height: 1.1rem;
+            margin-left: -1.8rem;
+            border: 1.5px solid #d0d0dd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.15rem;
+        }
+
+        .form-check-input:checked {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .form-check-label {
+            color: #495057;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* Submit button */
+        .btn-submit {
+            padding: 0.8rem 1rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0d6efd, #583cfa);
+            border: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(13, 110, 253, 0.35);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            transform: none;
+        }
+
+        .btn-submit .spinner-border {
+            width: 1.1rem;
+            height: 1.1rem;
+            border-width: 2px;
+            display: none;
+        }
+
+        .btn-submit.loading .spinner-border {
+            display: inline-block;
+        }
+
+        .btn-submit.loading .btn-text {
+            display: none;
+        }
+
+        /* Alerts */
+        .alert-custom {
+            border-radius: 12px;
+            font-size: 0.85rem;
+            border: none;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            animation: shakeX 0.5s ease;
+        }
+
+        @keyframes shakeX {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+
+        .alert-custom.alert-danger {
+            background: #fff0f0;
+            color: #dc3545;
+        }
+
+        .alert-custom.alert-success {
+            background: #f0fff4;
+            color: #198754;
+        }
+
+        .alert-custom i {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        /* Footer links */
+        .auth-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid #f0f0f5;
+        }
+
+        .auth-footer a {
+            font-size: 0.85rem;
+            text-decoration: none;
+            color: #6c757d;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .auth-footer a:hover {
+            color: #0d6efd;
+        }
+
+        .auth-footer a i {
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 2rem 1.25rem 1.5rem;
+                border-radius: 20px;
+            }
+
+            .brand .logo-ring {
+                width: 60px;
+                height: 60px;
+                border-radius: 16px;
+            }
+
+            .brand .logo-ring i { font-size: 1.5rem; }
+
+            .auth-footer {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d0d0dd; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #b0b0c0; }
+    </style>
+</head>
+<body>
+    <div class="bg-image"></div>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="brand">
+                <div class="logo-ring">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <h4>ShopExpress</h4>
+                <p>Admin Panel — Sign in to continue</p>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert-custom alert-{{ message.tags }}">
+                        <i class="bi bi-{% if message.tags == 'success' %}check-circle-fill{% elif message.tags == 'error' %}exclamation-triangle-fill{% else %}info-circle-fill{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if form.non_field_errors %}
+                <div class="alert-custom alert-danger">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    {{ form.non_field_errors.0 }}
+                </div>
+            {% endif %}
+
+            <form method="post" id="loginForm" novalidate>
+                {% csrf_token %}
+                {{ form|crispy }}
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="remember" id="rememberCheck">
+                    <label class="form-check-label" for="rememberCheck">
+                        Remember me
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-submit w-100" id="submitBtn">
+                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    <span class="btn-text"><i class="bi bi-box-arrow-in-right me-2"></i>Sign In</span>
+                </button>
+            </form>
+
+            <div class="auth-footer" style="justify-content: center;">
+                <a href="{% url 'core:home' %}">
+                    <i class="bi bi-arrow-left"></i> Back to Site
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wrap password field in a wrapper for the toggle button
+            const pwdDiv = document.getElementById('div_id_password');
+            if (pwdDiv) {
+                const pwdInput = document.getElementById('id_password');
+                const wrapper = document.createElement('div');
+                wrapper.className = 'password-wrapper';
+                pwdInput.parentNode.insertBefore(wrapper, pwdInput);
+                wrapper.appendChild(pwdInput);
+
+                const toggleBtn = document.createElement('button');
+                toggleBtn.type = 'button';
+                toggleBtn.className = 'password-toggle';
+                toggleBtn.setAttribute('aria-label', 'Toggle password visibility');
+                toggleBtn.innerHTML = '<i class="bi bi-eye" id="toggleIcon"></i>';
+                toggleBtn.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    if (pwdInput.type === 'password') {
+                        pwdInput.type = 'text';
+                        icon.className = 'bi bi-eye-slash';
+                    } else {
+                        pwdInput.type = 'password';
+                        icon.className = 'bi bi-eye';
+                    }
+                });
+                wrapper.appendChild(toggleBtn);
+            }
+
+            // Submit button loading state
+            document.getElementById('loginForm')?.addEventListener('submit', function() {
+                const btn = document.getElementById('submitBtn');
+                btn.classList.add('loading');
+                btn.disabled = true;
+            });
+
+            // Clear error styling on input
+            document.querySelectorAll('[id^="div_id_"] .form-control.is-invalid').forEach(function(el) {
+                el.addEventListener('input', function() {
+                    this.classList.remove('is-invalid');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
